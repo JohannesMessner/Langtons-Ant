@@ -12,6 +12,7 @@ public class AntGrid implements Grid {
   private final boolean[] configuration;
   private int xOffset;
   private int yOffset;
+  private int stepCount;
 
 
   public AntGrid(int height, int width, boolean[] configuration) {
@@ -21,6 +22,7 @@ public class AntGrid implements Grid {
     this.playingField = new HashMap<>();
     this.xOffset = 0;
     this.yOffset = 0;
+    this.stepCount = 0;
   }
 
   @Override
@@ -62,6 +64,7 @@ public class AntGrid implements Grid {
       ant.rotate(getRotationDir(newCell.getState().getPositionInCycle()));
       newCell.updateState();
     }
+    stepCount++;
   }
 
   private boolean getRotationDir(int i) {
@@ -150,11 +153,10 @@ public class AntGrid implements Grid {
 
   @Override
   public void clear() {
-
   }
 
   @Override
   public int getStepCount() {
-    return 0;
+    return stepCount;
   }
 }
