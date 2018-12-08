@@ -32,11 +32,11 @@ public class AntGrid implements Grid {
         ((AntCell) playingField.get(this.ant.getCoordinates())).updateState();
         this.ant = null;
       }
-      return;
+      this.ant = object;
     }
+
     col = applyYOffset(col);
     row = applyXOffset(row);
-    this.ant = object;
     ant.reposition(col, row);
   }
 
