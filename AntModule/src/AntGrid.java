@@ -4,11 +4,22 @@ import java.util.Map;
 
 public class AntGrid implements Grid {
 
-  HashMap<Coordinate, Cell> PlayingField;
+  private HashMap<Coordinate, Cell> PlayingField;
+  private Ant ant;
+  private int currentHeight;
+  private int currentWidth;
+  private final boolean[] configuration;
+
+  public AntGrid(int height, int width, boolean[] configuration){
+    this.currentHeight = height;
+    this.currentWidth = width;
+    this.configuration = configuration;
+  }
 
   @Override
   public void setAnt(Ant object, int col, int row) {
-
+    ant = object;
+    ant.reposition(col, row);
   }
 
   @Override
@@ -23,7 +34,23 @@ public class AntGrid implements Grid {
 
   @Override
   public void performStep() {
+    ant.stepForward();
+    int antX = ant.getX() % currentWidth;
+    int antY = ant.getY() % currentHeight;
+    ant.reposition(antX, antY);
 
+    Coordinate cor = ant.getCoordinates();
+    AntCell cell = (AntCell) PlayingField.get(cor);
+    if (cell == null){
+      PlayingField.put(cor, new AntCell());
+    }else {
+      ant.rotate(getRotationDir(cell.getState().getPositionInCycle()));
+      cell.updateState();
+    }
+  }
+
+  private boolean getRotationDir(int i){
+    return configuration[i % configuration.length];
   }
 
   @Override
