@@ -1,11 +1,11 @@
 public class Ant {
 
-  private static final Ant ant = new Ant();
+  //private static final Ant ant = new Ant();
   private Direction orientation;
   private int x;
   private int y;
 
-  private Ant() {
+  public Ant() {
     this.orientation = Constants.DEFAULT_ANT_DIRECTION;
     reposition(Constants.DEFAUL_ANT_POSITION);
   }
@@ -20,9 +20,9 @@ public class Ant {
     this.y = cor.getY();
   }
 
-  public static Ant getInstance() {
-    return ant;
-  }
+//  public static Ant getInstance() {
+//    return ant;
+//  }
 
   public void rotate(boolean turnDir) {
     if (turnDir == Constants.LEFT) {

@@ -29,7 +29,7 @@ public class AntGrid implements Grid {
   public void setAnt(Ant object, int col, int row) {
     col = applyYOffset(col);
     row = applyXOffset(row);
-    ant = object;
+    this.ant = object;
     ant.reposition(col, row);
   }
 
@@ -153,6 +153,17 @@ public class AntGrid implements Grid {
 
   @Override
   public void clear() {
+    for (int i = 0; i < currentWidth; i++){
+      for (int j = 0; j < currentHeight; j++){
+        Coordinate cor = new Coordinate(i, j);
+        Cell cell = playingField.get(cor);
+        if (cell != null){
+          playingField.put(cor, new AntCell());
+        }
+      }
+    }
+    this.ant = null;
+    this.stepCount = 0;
   }
 
   @Override
