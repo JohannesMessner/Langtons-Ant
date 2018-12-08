@@ -25,6 +25,8 @@ public class AntGrid implements Grid {
 
   @Override
   public void setAnt(Ant object, int col, int row) {
+    col = applyYOffset(col);
+    row = applyXOffset(row);
     ant = object;
     ant.reposition(col, row);
   }
@@ -90,6 +92,7 @@ public class AntGrid implements Grid {
 
   @Override
   public List getColumn(int i) {
+    i = applyXOffset(i);
     List<Cell> lst = new ArrayList<Cell>(currentHeight);
 
     for (int j = 0; j < currentHeight; j++) {
@@ -105,6 +108,7 @@ public class AntGrid implements Grid {
 
   @Override
   public List getRow(int j) {
+    j = applyYOffset(j);
     List<Cell> lst = new ArrayList<Cell>(currentHeight);
 
     for (int i = 0; i < currentHeight; i++) {
@@ -118,9 +122,30 @@ public class AntGrid implements Grid {
     return lst;
   }
 
+  private int applyYOffset(int y){
+    y -= yOffset;
+    if (y < 0){
+      y = currentHeight + y;
+    }
+    return y;
+  }
+
+  private int applyXOffset(int x){
+    x -= xOffset;
+    if (x < 0){
+      x = currentWidth + x;
+    }
+    return x;
+  }
+
   @Override
   public void resize(int cols, int rows) {
-
+    int yDiff = currentHeight - rows;
+    int xDiff = currentWidth - cols;
+    this.yOffset += yDiff / 2;
+    this.xOffset += xDiff / 2;
+    this.currentHeight = rows;
+    this.currentWidth = cols;
   }
 
   @Override
