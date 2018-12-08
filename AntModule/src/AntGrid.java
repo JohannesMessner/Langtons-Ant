@@ -27,6 +27,13 @@ public class AntGrid implements Grid {
 
   @Override
   public void setAnt(Ant object, int col, int row) {
+    if (object == null) {
+      if (this.ant != null) {
+        ((AntCell) playingField.get(this.ant.getCoordinates())).updateState();
+        this.ant = null;
+      }
+      return;
+    }
     col = applyYOffset(col);
     row = applyXOffset(row);
     this.ant = object;
