@@ -8,6 +8,10 @@ public class AntCell implements Cell {
     this.positionInCycle = 0;
   }
 
+  public AntCell(boolean hasAnt){
+    this.hasAnt = hasAnt;
+  }
+
   @Override
   public State getState() {
     return new State(hasAnt, positionInCycle);

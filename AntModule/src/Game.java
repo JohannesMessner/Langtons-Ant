@@ -8,6 +8,10 @@ public class Game {
     this.grid = new AntGrid(height, width, configuration);
   }
 
+  public Grid getGrid(){
+    return grid;
+  }
+
   public void setAnt(int x, int y){
     grid.setAnt(new Ant(), x, y);
   }
