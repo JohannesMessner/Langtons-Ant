@@ -1,13 +1,18 @@
 public class State {
-  private boolean hasAnt = false;
-  private int positionInCycle = 0;
+  private boolean hasAnt;
+  private int positionInCycle;
 
-  public State(boolean hasAnt, int positonInCycle){
+  public State() {
+    this.hasAnt = false;
+    this.positionInCycle = 0;
+  }
+
+  public State(boolean hasAnt, int positonInCycle) {
     this.hasAnt = hasAnt;
     this.positionInCycle = positonInCycle;
   }
 
-  public boolean hasAnt(){
+  public boolean hasAnt() {
     return hasAnt;
   }
 

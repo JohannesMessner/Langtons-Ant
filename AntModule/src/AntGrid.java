@@ -1,19 +1,26 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AntGrid implements Grid {
 
-  private HashMap<Coordinate, Cell> PlayingField;
+  private HashMap<Coordinate, Cell> playingField;
   private Ant ant;
   private int currentHeight;
   private int currentWidth;
   private final boolean[] configuration;
+  private int xOffset;
+  private int yOffset;
 
-  public AntGrid(int height, int width, boolean[] configuration){
+
+  public AntGrid(int height, int width, boolean[] configuration) {
     this.currentHeight = height;
     this.currentWidth = width;
     this.configuration = configuration;
+    this.playingField = new HashMap<>();
+    this.xOffset = 0;
+    this.yOffset = 0;
   }
 
   @Override
@@ -34,28 +41,36 @@ public class AntGrid implements Grid {
 
   @Override
   public void performStep() {
+    AntCell oldCell = (AntCell) playingField.get(ant.getCoordinates());
+    oldCell.updateState();
+
     ant.stepForward();
     int antX = ant.getX() % currentWidth;
     int antY = ant.getY() % currentHeight;
     ant.reposition(antX, antY);
 
     Coordinate cor = ant.getCoordinates();
-    AntCell cell = (AntCell) PlayingField.get(cor);
-    if (cell == null){
-      PlayingField.put(cor, new AntCell());
-    }else {
-      ant.rotate(getRotationDir(cell.getState().getPositionInCycle()));
-      cell.updateState();
+    AntCell newCell = (AntCell) playingField.get(cor);
+    if (newCell == null) {
+      newCell = new AntCell();
+      ant.rotate(getRotationDir(newCell.getState().getPositionInCycle()));
+      newCell.updateState();
+      playingField.put(cor, newCell);
+    } else {
+      ant.rotate(getRotationDir(newCell.getState().getPositionInCycle()));
+      newCell.updateState();
     }
   }
 
-  private boolean getRotationDir(int i){
+  private boolean getRotationDir(int i) {
     return configuration[i % configuration.length];
   }
 
   @Override
   public void performStep(int number) {
-
+    for (int i = 0; i < number; i++) {
+      performStep();
+    }
   }
 
   @Override
@@ -65,22 +80,42 @@ public class AntGrid implements Grid {
 
   @Override
   public int getWidth() {
-    return 0;
+    return currentWidth;
   }
 
   @Override
   public int getHeight() {
-    return 0;
+    return currentHeight;
   }
 
   @Override
   public List getColumn(int i) {
-    return null;
+    List<Cell> lst = new ArrayList<Cell>(currentHeight);
+
+    for (int j = 0; j < currentHeight; j++) {
+      Cell c = playingField.get(new Coordinate(i, j));
+      if (c == null) {
+        lst.add(new AntCell());
+      } else {
+        lst.add(c);
+      }
+    }
+    return lst;
   }
 
   @Override
   public List getRow(int j) {
-    return null;
+    List<Cell> lst = new ArrayList<Cell>(currentHeight);
+
+    for (int i = 0; i < currentHeight; i++) {
+      Cell c = playingField.get(new Coordinate(i, j));
+      if (c == null) {
+        lst.add(new AntCell());
+      } else {
+        lst.add(c);
+      }
+    }
+    return lst;
   }
 
   @Override
