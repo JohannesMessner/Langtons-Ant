@@ -168,9 +168,11 @@ public class Shell {
     }
     if (sc.hasNextInt()) {
       grid.performStep(sc.nextInt());
+      System.out.println(grid.getStepCount());
       return;
     }
     grid.performStep();
+    System.out.println(grid.getStepCount());
   }
 
   private static void handleClear() {
