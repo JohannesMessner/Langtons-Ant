@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AntGrid implements Grid {
 
@@ -18,7 +15,7 @@ public class AntGrid implements Grid {
   public AntGrid(int height, int width, boolean[] configuration) {
     this.currentHeight = height;
     this.currentWidth = width;
-    this.configuration = configuration;
+    this.configuration = Arrays.copyOf(configuration, configuration.length);
     this.playingField = new HashMap<>();
     this.xOffset = 0;
     this.yOffset = 0;

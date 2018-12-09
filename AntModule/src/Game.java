@@ -1,10 +1,12 @@
+import java.util.Arrays;
+
 public class Game {
 
   private Grid grid;
   private boolean[] configuration;
 
   public Game(int height, int width, boolean[] configuration){
-    this.configuration = configuration;
+    this.configuration = Arrays.copyOf(configuration, configuration.length);
     this.grid = new AntGrid(height, width, configuration);
   }
 

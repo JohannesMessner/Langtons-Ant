@@ -5,7 +5,7 @@ public final class Const {
   static final Coordinate DEFAUL_ANT_POSITION = new Coordinate(0, 0);
   static final int MAX_CONFIGS = 12;
 
-  public static final String[] COMMANDS = new String[]{
+  static final String[] COMMANDS = new String[]{
           "new", "ant", "unant", "step", "print", "clear", "resize", "help", "quit"
   };
   public static final int NEW = 0;
