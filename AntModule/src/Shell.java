@@ -157,6 +157,7 @@ public class Shell {
       System.out.println(Const.NO_ANT_ERROR);
       return;
     }
+    ant = null;
     grid.clearAnts();
   }
 

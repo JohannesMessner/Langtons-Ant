@@ -52,7 +52,7 @@ public class AntGrid implements Grid {
 
   @Override
   public void clearAnts() {
-
+    this.ant = null;
   }
 
   @Override
