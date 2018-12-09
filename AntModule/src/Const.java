@@ -20,6 +20,20 @@ public final class Const {
   public static final int NO_COMMAND = -1;
   public static final int INVALID_COMMAND = -2;
 
+  public static final String ANSI_RESET = "\u001B[0m";
+  public static final String COLOR_0 = "\u001B[47m";
+  public static final String COLOR_1 = "\u001B[37;40m";
+  public static final String COLOR_2 = "\u001B[42m";
+  public static final String COLOR_3 = "\u001B[41m";
+  public static final String COLOR_4 = "\u001B[37;44m";
+  public static final String COLOR_5 = "\u001B[43m";
+  public static final String COLOR_6 = "\u001B[46m";
+  public static final String COLOR_7 = "\u001B[45m";
+  public static final String COLOR_8 = "\u001B[36;41m";
+  public static final String COLOR_9 = "\u001B[31;44m";
+  public static final String COLOR_10 = "\u001B[34;43m";
+  public static final String COLOR_11 = "\u001B[32;45m";
+
   public static final String NO_WIDTH_ERROR = "Error! Your need to specify a width for the grid";
   public static final String NO_HEIGHT_ERROR = "Error! Your need to specify a height for the grid";
   public static final String NO_CONFIG_ERROR = "Error! Your need to specify a configuration for the grid";

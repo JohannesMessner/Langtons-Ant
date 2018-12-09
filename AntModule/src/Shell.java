@@ -260,21 +260,69 @@ public class Shell {
       for (Object o : lst) {
         Cell c = (Cell) o;
         State st = c.getState();
-        String str = "" + (st.getPositionInCycle() % configLen);
+        String str = "";
+        str = str + getColorSequence(st.getPositionInCycle());
+
         if (st.hasAnt()) {
           if (ant.getOrientation() == Direction.UP) {
-            str = "^";
+            str = str + "^";
           } else if (ant.getOrientation() == Direction.RIGHT) {
-            str = ">";
+            str = str + ">";
           } else if (ant.getOrientation() == Direction.DOWN) {
-            str = "v";
+            str = str + "v";
           } else if (ant.getOrientation() == Direction.LEFT) {
-            str = "<";
+            str = str + "<";
           }
+        } else {
+          str = str + getColorSymbol(st.getPositionInCycle());
         }
+        str = str + Const.ANSI_RESET;
         System.out.print(str);
       }
       System.out.print("\n");
     }
+  }
+
+  private static String getColorSequence(int positionInCycle){
+    positionInCycle = (positionInCycle % configLen);
+
+    switch (positionInCycle){
+      case 0:
+        return Const.COLOR_0;
+      case 1:
+        return Const.COLOR_1;
+      case 2:
+        return Const.COLOR_2;
+      case 3:
+        return Const.COLOR_3;
+      case 4:
+        return Const.COLOR_4;
+      case 5:
+        return Const.COLOR_5;
+      case 6:
+        return Const.COLOR_6;
+      case 7:
+        return Const.COLOR_7;
+      case 8:
+        return Const.COLOR_8;
+      case 9:
+        return Const.COLOR_9;
+      case 10:
+        return Const.COLOR_10;
+      case 11:
+        return Const.COLOR_11;
+    }
+    return Const.COLOR_0;
+  }
+
+  private static String getColorSymbol(int positionInCycle){
+    positionInCycle = (positionInCycle % configLen);
+    if (positionInCycle == 10) {
+      return "A";
+    }
+    if (positionInCycle == 11) {
+      return "B";
+    }
+    return "" + positionInCycle;
   }
 }

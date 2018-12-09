@@ -116,7 +116,7 @@ public class AntGrid implements Grid {
   }
 
   @Override
-  public List getColumn(int i) {
+  public List<Cell> getColumn(int i) {
     i = applyXOffset(i);
     List<Cell> lst = new ArrayList<Cell>(currentHeight);
 
@@ -132,7 +132,7 @@ public class AntGrid implements Grid {
   }
 
   @Override
-  public List getRow(int j) {
+  public List<Cell> getRow(int j) {
     j = applyYOffset(j);
     List<Cell> lst = new ArrayList<Cell>(currentHeight);
 

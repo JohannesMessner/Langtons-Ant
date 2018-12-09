@@ -18,9 +18,9 @@ public interface Grid {
 
   int getHeight(); // y-dimension
 
-  List getColumn(int i); // get column i (starting at 0)
+  List<Cell> getColumn(int i); // get column i (starting at 0)
 
-  List getRow(int j); // get row j (starting at 0)
+  List<Cell> getRow(int j); // get row j (starting at 0)
 
   void resize(int cols, int rows); // resize grid
 
