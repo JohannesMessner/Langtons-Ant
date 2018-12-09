@@ -6,8 +6,8 @@ public class Ant {
   private int y;
 
   public Ant() {
-    this.orientation = Constants.DEFAULT_ANT_DIRECTION;
-    reposition(Constants.DEFAUL_ANT_POSITION);
+    this.orientation = Const.DEFAULT_ANT_DIRECTION;
+    reposition(Const.DEFAUL_ANT_POSITION);
   }
 
   public void reposition(int x, int y) {
@@ -25,9 +25,9 @@ public class Ant {
 //  }
 
   public void rotate(boolean turnDir) {
-    if (turnDir == Constants.LEFT) {
+    if (turnDir == Const.LEFT) {
       turnLeft();
-    } else if (turnDir == Constants.RIGHT) {
+    } else if (turnDir == Const.RIGHT) {
       turnRight();
     }
   }
