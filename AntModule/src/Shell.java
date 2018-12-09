@@ -256,7 +256,7 @@ public class Shell {
   private static void print() {
     System.out.println("");
     for (int i = 0; i < grid.getHeight(); i++) {
-      List lst = grid.getRow(i);
+      List<Cell> lst = grid.getRow(i);
       for (Object o : lst) {
         Cell c = (Cell) o;
         State st = c.getState();
