@@ -45,7 +45,9 @@ public class AntGrid implements Grid {
 
   @Override
   public Map<Coordinate, Ant> getAnts() {
-    return null;
+    Map<Coordinate, Ant> m = new HashMap<>();
+    m.put(ant.getCoordinates(), ant);
+    return m;
   }
 
   @Override
