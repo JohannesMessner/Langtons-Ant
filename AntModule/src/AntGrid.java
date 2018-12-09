@@ -59,9 +59,7 @@ public class AntGrid implements Grid {
     oldCell.updateState();
 
     ant.stepForward();
-    int antX = ant.getX() % currentWidth;
-    int antY = ant.getY() % currentHeight;
-    ant.reposition(antX, antY);
+    putBackOnGrid(ant);
 
     Coordinate cor = ant.getCoordinates();
     AntCell newCell = (AntCell) playingField.get(cor);
@@ -75,6 +73,18 @@ public class AntGrid implements Grid {
       newCell.updateState();
     }
     stepCount++;
+  }
+
+  private void putBackOnGrid(Ant ant) {
+    int antX = (ant.getX() % currentWidth);
+    int antY = (ant.getY() % currentHeight);
+    if (antX < 0) {
+      antX = currentWidth + antX;
+    }
+    if (antY < 0) {
+      antY = currentHeight + antY;
+    }
+    ant.reposition(antX, antY);
   }
 
   private boolean getRotationDir(int i) {
@@ -135,17 +145,17 @@ public class AntGrid implements Grid {
     return lst;
   }
 
-  private int applyYOffset(int y){
+  private int applyYOffset(int y) {
     y -= yOffset;
-    if (y < 0){
+    if (y < 0) {
       y = currentHeight + y;
     }
     return y;
   }
 
-  private int applyXOffset(int x){
+  private int applyXOffset(int x) {
     x -= xOffset;
-    if (x < 0){
+    if (x < 0) {
       x = currentWidth + x;
     }
     return x;
@@ -163,11 +173,11 @@ public class AntGrid implements Grid {
 
   @Override
   public void clear() {
-    for (int i = 0; i < currentWidth; i++){
-      for (int j = 0; j < currentHeight; j++){
+    for (int i = 0; i < currentWidth; i++) {
+      for (int j = 0; j < currentHeight; j++) {
         Coordinate cor = new Coordinate(i, j);
         Cell cell = playingField.get(cor);
-        if (cell != null){
+        if (cell != null) {
           playingField.put(cor, new AntCell());
         }
       }

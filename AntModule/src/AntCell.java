@@ -8,7 +8,7 @@ public class AntCell implements Cell {
     this.positionInCycle = 0;
   }
 
-  public AntCell(boolean hasAnt){
+  public AntCell(boolean hasAnt) {
     this.hasAnt = hasAnt;
   }
 
@@ -18,7 +18,7 @@ public class AntCell implements Cell {
   }
 
   public void updateState() {
-    if (!this.hasAnt) {
+    if (this.hasAnt) {
       positionInCycle++;
     }
     this.hasAnt = !this.hasAnt;

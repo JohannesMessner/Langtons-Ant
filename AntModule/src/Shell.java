@@ -7,33 +7,34 @@ public class Shell {
 
   public static void main(String[] args) {
     boolean[] config = new boolean[2];
-    config[0] = true;
-    config[1] = false;
-    game = new Game(10, 10, config);
-    game.setAnt(3,3);
+    config[0] = false;
+    config[1] = true;
+    game = new Game(120, 120, config);
+    game.setAnt(50, 50);
     grid = game.getGrid();
-    print();
+    //print();
 
-    game.step();
-    print();
+//    game.step();
+//    print();
+//
+//    game.step();
+//    print();
 
-    game.step();
+    game.step(20000);
     print();
-
-    game.step(10000);
-    print();
+    System.out.println(-1 % 3);
 
   }
 
-  private static void print(){
+  private static void print() {
     System.out.println("");
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < 120; i++) {
       List lst = grid.getRow(i);
-      for (Object o : lst){
+      for (Object o : lst) {
         Cell c = (Cell) o;
         State st = c.getState();
-        String str = "" + st.getPositionInCycle();
-        if (st.hasAnt()){
+        String str = "" + (st.getPositionInCycle() % 2);
+        if (st.hasAnt()) {
           str = "x";
         }
         System.out.print(str);
