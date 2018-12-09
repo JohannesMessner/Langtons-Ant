@@ -221,7 +221,7 @@ public class Shell {
 
   private static boolean[] toConfigArray(String str) {
     int strLen = str.length();
-    if (strLen > Const.MAX_CONFIGS || strLen == 0) {
+    if (strLen > Const.MAX_CONFIGS || strLen < 2) {
       return null;
     }
 
