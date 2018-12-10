@@ -130,6 +130,7 @@ public class Shell {
       return;
     }
 
+    ant = null;
     configLen = config.length;
     grid = new AntGrid(y, x, config);
   }
@@ -167,7 +168,12 @@ public class Shell {
       return;
     }
     if (sc.hasNextInt()) {
-      grid.performStep(sc.nextInt());
+      int numOfSteps = sc.nextInt();
+      if (numOfSteps >= 1) {
+        grid.performStep(numOfSteps);
+      } else if (numOfSteps < 0) {
+        grid.reset(-numOfSteps);
+      }
       System.out.println(grid.getStepCount());
       return;
     }
@@ -263,7 +269,7 @@ public class Shell {
         Cell c = (Cell) o;
         State st = c.getState();
         String str = "";
-        str = str + getColorSequence(st.getPositionInCycle());
+        str = str + getColorSequence(st.getTimesVisited());
 
         if (st.hasAnt()) {
           if (ant.getOrientation() == Direction.UP) {
@@ -276,7 +282,7 @@ public class Shell {
             str = str + "<";
           }
         } else {
-          str = str + getColorSymbol(st.getPositionInCycle());
+          str = str + getColorSymbol(st.getTimesVisited());
         }
         str = str + Const.ANSI_RESET;
         System.out.print(str);
@@ -285,10 +291,10 @@ public class Shell {
     }
   }
 
-  private static String getColorSequence(int positionInCycle){
+  private static String getColorSequence(int positionInCycle) {
     positionInCycle = (positionInCycle % configLen);
 
-    switch (positionInCycle){
+    switch (positionInCycle) {
       case 0:
         return Const.COLOR_0;
       case 1:
@@ -317,7 +323,7 @@ public class Shell {
     return Const.COLOR_0;
   }
 
-  private static String getColorSymbol(int positionInCycle){
+  private static String getColorSymbol(int positionInCycle) {
     positionInCycle = (positionInCycle % configLen);
     if (positionInCycle == 10) {
       return "A";
