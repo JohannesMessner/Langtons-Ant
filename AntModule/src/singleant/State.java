@@ -1,3 +1,5 @@
+package singleant;
+
 public class State {
   private boolean hasAnt;
   private int timesVisited;

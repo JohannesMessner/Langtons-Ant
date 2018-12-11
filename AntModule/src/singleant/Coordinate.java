@@ -1,4 +1,5 @@
-import java.util.HashMap;
+package singleant;
+
 import java.util.Objects;
 
 public class Coordinate {
@@ -6,27 +7,27 @@ public class Coordinate {
   private int x;
   private int y;
 
-  public int getX() {
+  int getX() {
     return x;
   }
 
-  public int getY() {
+  int getY() {
     return y;
   }
 
-  public Coordinate(int x, int y){
+  public Coordinate(int x, int y) {
     this.x = x;
     this.y = y;
   }
 
   @Override
-  public int hashCode(){
-    return Objects.hash(x,y);
+  public int hashCode() {
+    return Objects.hash(x, y);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Coordinate)){
+    if (!(obj instanceof Coordinate)) {
       return false;
     }
     Coordinate c = (Coordinate) obj;

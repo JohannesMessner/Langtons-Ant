@@ -1,3 +1,5 @@
+package singleant;
+
 public enum Direction {
   UP{
     @Override

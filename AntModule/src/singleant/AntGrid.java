@@ -1,3 +1,5 @@
+package singleant;
+
 import java.util.*;
 
 public class AntGrid implements Grid {

@@ -1,11 +1,16 @@
-public final class Const {
-  static final boolean LEFT = true;
-  static final boolean RIGHT = false;
-  static final Direction DEFAULT_ANT_DIRECTION = Direction.LEFT;
-  static final Coordinate DEFAUL_ANT_POSITION = new Coordinate(0, 0);
-  static final int MAX_CONFIGS = 12;
+package antconst;
 
-  static final String[] COMMANDS = new String[]{
+import singleant.Coordinate;
+import singleant.Direction;
+
+public final class Const {
+  public static final boolean LEFT = true;
+  public static final boolean RIGHT = false;
+  public static final Direction DEFAULT_ANT_DIRECTION = Direction.LEFT;
+  public static final Coordinate DEFAUL_ANT_POSITION = new Coordinate(0, 0);
+  public static final int MAX_CONFIGS = 12;
+
+  public static final String[] COMMANDS = new String[]{
           "new", "ant", "unant", "step", "print", "clear", "resize", "help", "quit"
   };
   public static final int NEW = 0;

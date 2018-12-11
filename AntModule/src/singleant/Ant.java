@@ -1,3 +1,7 @@
+package singleant;
+
+import antconst.Const;
+
 public class Ant {
 
   //private static final Ant ant = new Ant();
@@ -10,12 +14,12 @@ public class Ant {
     reposition(Const.DEFAUL_ANT_POSITION);
   }
 
-  public void reposition(int x, int y) {
+  void reposition(int x, int y) {
     this.x = x;
     this.y = y;
   }
 
-  public void reposition(Coordinate cor) {
+  void reposition(Coordinate cor) {
     this.x = cor.getX();
     this.y = cor.getY();
   }
@@ -24,7 +28,7 @@ public class Ant {
 //    return ant;
 //  }
 
-  public void rotate(boolean turnDir) {
+  void rotate(boolean turnDir) {
     if (turnDir == Const.LEFT) {
       turnLeft();
     } else if (turnDir == Const.RIGHT) {
@@ -32,11 +36,11 @@ public class Ant {
     }
   }
 
-  public void turnLeft() {
+  private void turnLeft() {
     orientation = orientation.turnLeft();
   }
 
-  public void turnRight() {
+  private void turnRight() {
     orientation = orientation.turnRight();
   }
 
@@ -44,7 +48,7 @@ public class Ant {
     return orientation;
   }
 
-  public void stepForward() {
+  void stepForward() {
     if (orientation == Direction.UP) {
       y--;
     } else if (orientation == Direction.RIGHT) {
@@ -56,15 +60,15 @@ public class Ant {
     }
   }
 
-  public Coordinate getCoordinates() {
+  Coordinate getCoordinates() {
     return new Coordinate(this.x, this.y);
   }
 
-  public int getX() {
+  int getX() {
     return this.x;
   }
 
-  public int getY() {
+  int getY() {
     return this.y;
   }
 }

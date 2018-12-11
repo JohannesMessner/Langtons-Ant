@@ -1,3 +1,6 @@
+import antconst.Const;
+import singleant.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,18 +31,6 @@ public class Shell {
         handleCommand(inputLine);
       }
     }
-
-//    boolean[] config = new boolean[2];
-//    config[0] = false;
-//    config[1] = true;
-//    game = new Game(120, 120, config);
-//    game.setAnt(50, 50);
-//    grid = game.getGrid();
-//
-//    game.step(20000);
-//    print();
-//    System.out.println(-1 % 3);
-
   }
 
   private static void handleCommand(String inputLine) {
