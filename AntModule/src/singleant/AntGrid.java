@@ -14,7 +14,14 @@ public class AntGrid implements Grid {
   private int stepCount;
   private List<Cell> cellHistory;
 
-
+  /**
+   * Constructor that initializes all the Grid's variables and constants.
+   *
+   * @param height int height of the grid
+   * @param width int width of the grid
+   * @param configuration boolean[] representing the turning-configuration
+   *                      of the Grid's Ant
+   */
   public AntGrid(int height, int width, boolean[] configuration) {
     this.currentHeight = height;
     this.currentWidth = width;
@@ -26,6 +33,13 @@ public class AntGrid implements Grid {
     this.stepCount = 0;
   }
 
+  /**
+   * Puts an Ant on the Grid.
+   *
+   * @param object Ant that will be put on the Grid
+   * @param col int column(x)-index of the Ant's position on the Grid
+   * @param row int row(y)-index of the Ant's position on the Grid
+   */
   @Override
   public void setAnt(Ant object, int col, int row) {
     if (object == null) {
@@ -45,6 +59,12 @@ public class AntGrid implements Grid {
     cellHistory.add(0, cell);
   }
 
+  /**
+   * Returns all the Ants present on the Grid.
+   * In this implementation this will always be a single Ant.
+   *
+   * @return Map<Coordinate,Ant> of the Ants and their Coordinates
+   */
   @Override
   public Map<Coordinate, Ant> getAnts() {
     Map<Coordinate, Ant> m = new HashMap<>();
@@ -52,6 +72,9 @@ public class AntGrid implements Grid {
     return m;
   }
 
+  /**
+   * Deletes all the Ants present on the Grid.
+   */
   @Override
   public void clearAnts() {
     this.ant = null;
@@ -61,6 +84,10 @@ public class AntGrid implements Grid {
     }
   }
 
+  /**
+   * Performs a step with the Ant present on the Grid.
+   * All of the Grid's Cells will be updated accordingly.
+   */
   @Override
   public void performStep() {
     AntCell oldCell = (AntCell) playingField.get(ant.getCoordinates());
@@ -84,6 +111,12 @@ public class AntGrid implements Grid {
     stepCount++;
   }
 
+  /**
+   * Repositions the Ant if it has "fallen off" the grid.
+   * Simulates a torus-shaped Grid.
+   *
+   * @param ant
+   */
   private void putBackOnGrid(Ant ant) {
     int antX = (ant.getX() % currentWidth);
     int antY = (ant.getY() % currentHeight);
@@ -96,14 +129,35 @@ public class AntGrid implements Grid {
     ant.reposition(antX, antY);
   }
 
+  /**
+   * Returns the rotation-direction for the Ant.
+   * Based on the configuration and a Cells timesVisited.
+   *
+   * @param i int indicating how many times a Cell has been visited by the Ant.
+   * @return boolean representing the rotation
+   *         based on the Convention defined in antconst.Const
+   */
   private boolean getRotationDir(int i) {
     return configuration[i % configuration.length];
   }
 
+  /**
+   * Returns the inverted rotation-direction for the Ant.
+   * Should be called only when resetting the Grid.
+   *
+   * @param i int indicating how many times a Cell has been visited by the Ant.
+   * @return boolean representing the rotation
+   *         based on the Convention defined in antconst.Const
+   */
   private boolean getInvertedRotationDir(int i) {
     return !getRotationDir(i);
   }
 
+  /**
+   * Perfoms multiple steps at once.
+   *
+   * @param number int number of steps
+   */
   @Override
   public void performStep(int number) {
     for (int i = 0; i < number; i++) {
@@ -111,6 +165,12 @@ public class AntGrid implements Grid {
     }
   }
 
+  /**
+   * Resets the grid to its state of a given number of steps ago.
+   * Updates the Cell's States and the Ant's position on the Grid.
+   *
+   * @param number int number of steps backwards
+   */
   @Override
   public void reset(int number) {
 
@@ -140,16 +200,32 @@ public class AntGrid implements Grid {
 
   }
 
+  /**
+   * Returns the width of the Grid.
+   *
+   * @return int representing the width of the Grid.
+   */
   @Override
   public int getWidth() {
     return currentWidth;
   }
 
+  /**
+   * Returns the height of the Grid.
+   *
+   * @return int representing the height of the Grid.
+   */
   @Override
   public int getHeight() {
     return currentHeight;
   }
 
+  /**
+   * Returns a column of the Grid by a given index.
+   *
+   * @param i index of the column
+   * @return List<Cell> of Cells in the column
+   */
   @Override
   public List<Cell> getColumn(int i) {
     i = applyXOffset(i);
@@ -166,6 +242,12 @@ public class AntGrid implements Grid {
     return lst;
   }
 
+  /**
+   * Returns a row of the Grid by a given index.
+   *
+   * @param j index of the row
+   * @return List<Cell> of Cells in the row
+   */
   @Override
   public List<Cell> getRow(int j) {
     j = applyYOffset(j);
@@ -182,6 +264,13 @@ public class AntGrid implements Grid {
     return lst;
   }
 
+  /**
+   * Applies an offset to a y-coordinate.
+   * Used to simulate a symmetrical Grid after resizing it.
+   *
+   * @param y int of the y-coordinate to be transformed
+   * @return int transformed y-coordinate
+   */
   private int applyYOffset(int y) {
     y -= yOffset;
     if (y < 0) {
@@ -190,6 +279,13 @@ public class AntGrid implements Grid {
     return y;
   }
 
+  /**
+   * Applies an offset to a x-coordinate.
+   * Used to simulate a symmetrical Grid after resizing it.
+   *
+   * @param x int of the x-coordinate to be transformed
+   * @return int transformed x-coordinate
+   */
   private int applyXOffset(int x) {
     x -= xOffset;
     if (x < 0) {
@@ -198,6 +294,12 @@ public class AntGrid implements Grid {
     return x;
   }
 
+  /**
+   * Resizes the Grid.
+   *
+   * @param cols int new width of the grid
+   * @param rows int new height of the grid.
+   */
   @Override
   public void resize(int cols, int rows) {
     int yDiff = currentHeight - rows;
@@ -208,6 +310,9 @@ public class AntGrid implements Grid {
     this.currentWidth = cols;
   }
 
+  /**
+   * Clears all Ants from the Grid and resets the Cells.
+   */
   @Override
   public void clear() {
     for (int i = 0; i < currentWidth; i++) {
@@ -223,6 +328,11 @@ public class AntGrid implements Grid {
     this.stepCount = 0;
   }
 
+  /**
+   * Returns the number of (forward) steps taken so far.
+   *
+   * @return
+   */
   @Override
   public int getStepCount() {
     return stepCount;

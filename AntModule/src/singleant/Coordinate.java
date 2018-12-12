@@ -2,6 +2,9 @@ package singleant;
 
 import java.util.Objects;
 
+/**
+ * Class representing a coordinate on the Grid.
+ */
 public class Coordinate {
 
   private int x;
@@ -15,6 +18,12 @@ public class Coordinate {
     return y;
   }
 
+  /**
+   * Constructor setting a x ans y coordinate.
+   *
+   * @param x int x-coordinate
+   * @param y int y-coordinate
+   */
   public Coordinate(int x, int y) {
     this.x = x;
     this.y = y;

@@ -3,6 +3,9 @@ package antconst;
 import singleant.Coordinate;
 import singleant.Direction;
 
+/**
+ * Class for constants of the whole program.
+ */
 public final class Const {
   public static final boolean LEFT = true;
   public static final boolean RIGHT = false;

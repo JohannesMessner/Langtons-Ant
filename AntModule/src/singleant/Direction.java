@@ -1,5 +1,8 @@
 package singleant;
 
+/**
+ * Enum-class representing the directions the Ant can be facing.
+ */
 public enum Direction {
   UP{
     @Override

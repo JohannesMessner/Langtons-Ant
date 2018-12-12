@@ -7,6 +7,10 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Class handling text-based I/O for a Langton's Ant program.
+ * Draws and prints the Grid.
+ */
 public class Shell {
 
   private static Grid grid;
@@ -17,6 +21,12 @@ public class Shell {
 
   private static final String PROMPT = "ant> ";
 
+  /**
+   * Main-method taking user commands and handling them.
+   *
+   * @param args
+   * @throws IOException
+   */
   public static void main(String[] args) throws IOException {
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     quit = false;
@@ -33,6 +43,11 @@ public class Shell {
     }
   }
 
+  /**
+   * Handles commands an transforms them into method-calls of the underlying logic.
+   *
+   * @param inputLine line of user-input
+   */
   private static void handleCommand(String inputLine) {
     sc = new Scanner(inputLine);
     sc.useDelimiter("\\s+");
@@ -252,6 +267,11 @@ public class Shell {
     return Const.INVALID_COMMAND;
   }
 
+  /**
+   * Prints the Grid to the command-line.
+   * Indicates the position and direction of the Ant
+   * and indicates the Cell's states by colors.
+   */
   private static void print() {
     System.out.println("");
     for (int i = 0; i < grid.getHeight(); i++) {
@@ -282,6 +302,12 @@ public class Shell {
     }
   }
 
+  /**
+   * Maps a Cell's state to a color.
+   *
+   * @param positionInCycle int number of times a Cell has been visited
+   * @return String color
+   */
   private static String getColorSequence(int positionInCycle) {
     positionInCycle = (positionInCycle % configLen);
 
