@@ -24,7 +24,7 @@ public class Shell {
   /**
    * Main-method taking user commands and handling them.
    *
-   * @param args
+   * @param args Command-line arguments
    * @throws IOException
    */
   public static void main(String[] args) throws IOException {
@@ -196,8 +196,8 @@ public class Shell {
   }
 
   private static void handleResize() {
-    int x = 0;
-    int y = 0;
+    int x;
+    int y;
 
     if (sc.hasNextInt()) {
       x = sc.nextInt();
@@ -276,8 +276,7 @@ public class Shell {
     System.out.println("");
     for (int i = 0; i < grid.getHeight(); i++) {
       List<Cell> lst = grid.getRow(i);
-      for (Object o : lst) {
-        Cell c = (Cell) o;
+      for (Cell c : lst) {
         State st = c.getState();
         String str = "";
         str = str + getColorSequence(st.getTimesVisited());

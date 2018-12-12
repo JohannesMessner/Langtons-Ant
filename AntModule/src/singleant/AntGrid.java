@@ -63,7 +63,7 @@ public class AntGrid implements Grid {
    * Returns all the Ants present on the Grid.
    * In this implementation this will always be a single Ant.
    *
-   * @return Map<Coordinate,Ant> of the Ants and their Coordinates
+   * @return Map of the Ants and their Coordinates
    */
   @Override
   public Map<Coordinate, Ant> getAnts() {
@@ -78,7 +78,7 @@ public class AntGrid implements Grid {
   @Override
   public void clearAnts() {
     this.ant = null;
-    List<Cell> cellList = new ArrayList<Cell>(playingField.values());
+    List<Cell> cellList = new ArrayList<>(playingField.values());
     for (Cell c : cellList) {
       ((AntCell) c).setAnt(false);
     }
@@ -92,7 +92,6 @@ public class AntGrid implements Grid {
   public void performStep() {
     AntCell oldCell = (AntCell) playingField.get(ant.getCoordinates());
     oldCell.updateState();
-    //cellHistory.add(0, oldCell);
     ant.stepForward();
     putBackOnGrid(ant);
 
@@ -107,6 +106,7 @@ public class AntGrid implements Grid {
       ant.rotate(getRotationDir(newCell.getState().getTimesVisited()));
       newCell.updateState();
     }
+
     cellHistory.add(0, newCell);
     stepCount++;
   }
@@ -115,7 +115,7 @@ public class AntGrid implements Grid {
    * Repositions the Ant if it has "fallen off" the grid.
    * Simulates a torus-shaped Grid.
    *
-   * @param ant
+   * @param ant Ant to be put back on the grid
    */
   private void putBackOnGrid(Ant ant) {
     int antX = (ant.getX() % currentWidth);
@@ -229,12 +229,13 @@ public class AntGrid implements Grid {
   @Override
   public List<Cell> getColumn(int i) {
     i = applyXOffset(i);
-    List<Cell> lst = new ArrayList<Cell>(currentHeight);
+    List<Cell> lst = new ArrayList<>(currentHeight);
 
     for (int j = 0; j < currentHeight; j++) {
-      Cell c = playingField.get(new Coordinate(i, j));
+      int y = applyYOffset(j);
+      Cell c = playingField.get(new Coordinate(i, y));
       if (c == null) {
-        lst.add(new AntCell(i, j));
+        lst.add(new AntCell(i, y));
       } else {
         lst.add(c);
       }
@@ -251,12 +252,14 @@ public class AntGrid implements Grid {
   @Override
   public List<Cell> getRow(int j) {
     j = applyYOffset(j);
-    List<Cell> lst = new ArrayList<Cell>(currentHeight);
+    List<Cell> lst = new ArrayList<>(currentWidth);
 
-    for (int i = 0; i < currentHeight; i++) {
-      Cell c = playingField.get(new Coordinate(i, j));
+    //int i = applyXOffset(0);
+    for (int i = 0; i < currentWidth; i++) {
+      int x = applyXOffset(i);
+      Cell c = playingField.get(new Coordinate(x, j));
       if (c == null) {
-        lst.add(new AntCell(i, j));
+        lst.add(new AntCell(x, j));
       } else {
         lst.add(c);
       }
@@ -272,25 +275,27 @@ public class AntGrid implements Grid {
    * @return int transformed y-coordinate
    */
   private int applyYOffset(int y) {
-    y -= yOffset;
+    y += yOffset;
     if (y < 0) {
       y = currentHeight + y;
     }
+    y = y % currentHeight;
     return y;
   }
 
   /**
-   * Applies an offset to a x-coordinate.
+   * Applies an offset to an x-coordinate.
    * Used to simulate a symmetrical Grid after resizing it.
    *
    * @param x int of the x-coordinate to be transformed
    * @return int transformed x-coordinate
    */
   private int applyXOffset(int x) {
-    x -= xOffset;
+    x += xOffset;
     if (x < 0) {
       x = currentWidth + x;
     }
+    x = x % currentWidth;
     return x;
   }
 
@@ -331,7 +336,7 @@ public class AntGrid implements Grid {
   /**
    * Returns the number of (forward) steps taken so far.
    *
-   * @return
+   * @return int number of steps taken
    */
   @Override
   public int getStepCount() {
