@@ -277,7 +277,8 @@ public class AntGrid implements Grid {
   private int applyYOffset(int y) {
     y += yOffset;
     if (y < 0) {
-      y = currentHeight + y;}
+      y = currentHeight + y;
+    }
 //    } else if (y >= currentHeight) {
 //      y = y % currentHeight;
 //    }
@@ -294,7 +295,8 @@ public class AntGrid implements Grid {
   private int applyXOffset(int x) {
     x += xOffset;
     if (x < 0) {
-      x = currentWidth + x;}
+      x = currentWidth + x;
+    }
 //    } else if (x >= currentWidth) {
 //      x = x % currentWidth;
 //    }
@@ -315,6 +317,21 @@ public class AntGrid implements Grid {
     this.xOffset += xDiff / 2;
     this.currentHeight = rows;
     this.currentWidth = cols;
+    deleteOutOfBoundsCells();
+  }
+
+  /**
+   * Deletes all cells that have "fallen off" the Grid after a resize.
+   */
+  private void deleteOutOfBoundsCells() {
+
+    for (Coordinate cor : playingField.keySet()) {
+      boolean xOutOfBounds = cor.getX() >= applyXOffset(currentWidth);
+      boolean yOutOfBounds = cor.getY() >= applyYOffset(currentHeight);
+      if (xOutOfBounds || yOutOfBounds) {
+        playingField.put(cor, null);
+      }
+    }
   }
 
   /**
