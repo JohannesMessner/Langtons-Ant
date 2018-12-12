@@ -3,6 +3,10 @@ package antconst;
 import singleant.Coordinate;
 import singleant.Direction;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Class for constants of the whole program.
  */
@@ -13,9 +17,13 @@ public final class Const {
   public static final Coordinate DEFAUL_ANT_POSITION = new Coordinate(0, 0);
   public static final int MAX_CONFIGS = 12;
 
-  public static final String[] COMMANDS = new String[]{
-          "new", "ant", "unant", "step", "print", "clear", "resize", "help", "quit"
-  };
+  public static final List<String> COMMANDS = Collections.unmodifiableList(new ArrayList<String>(){{
+    add("new"); add("ant"); add("unant"); add("step"); add("print");
+    add("clear"); add("resize"); add("help"); add("quit");
+  }});
+//  public static final String[] COMMANDS = new String[]{
+//          "new", "ant", "unant", "step", "print", "clear", "resize", "help", "quit"
+//  };
   public static final int NEW = 0;
   public static final int ANT = 1;
   public static final int UNANT = 2;

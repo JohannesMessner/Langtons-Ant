@@ -259,8 +259,8 @@ public class Shell {
       return Const.INVALID_COMMAND;
     }
     command = command.toLowerCase();
-    for (int i = 0; i < Const.COMMANDS.length; i++) {
-      if (Const.COMMANDS[i].startsWith(command)) {
+    for (int i = 0; i < Const.COMMANDS.size(); i++) {
+      if (Const.COMMANDS.get(i).startsWith(command)) {
         return i;
       }
     }

@@ -17,8 +17,8 @@ public class AntGrid implements Grid {
   /**
    * Constructor that initializes all the Grid's variables and constants.
    *
-   * @param height int height of the grid
-   * @param width int width of the grid
+   * @param height        int height of the grid
+   * @param width         int width of the grid
    * @param configuration boolean[] representing the turning-configuration
    *                      of the Grid's Ant
    */
@@ -37,8 +37,8 @@ public class AntGrid implements Grid {
    * Puts an Ant on the Grid.
    *
    * @param object Ant that will be put on the Grid
-   * @param col int column(x)-index of the Ant's position on the Grid
-   * @param row int row(y)-index of the Ant's position on the Grid
+   * @param col    int column(x)-index of the Ant's position on the Grid
+   * @param row    int row(y)-index of the Ant's position on the Grid
    */
   @Override
   public void setAnt(Ant object, int col, int row) {
@@ -135,7 +135,7 @@ public class AntGrid implements Grid {
    *
    * @param i int indicating how many times a Cell has been visited by the Ant.
    * @return boolean representing the rotation
-   *         based on the Convention defined in antconst.Const
+   * based on the Convention defined in antconst.Const
    */
   private boolean getRotationDir(int i) {
     return configuration[i % configuration.length];
@@ -147,7 +147,7 @@ public class AntGrid implements Grid {
    *
    * @param i int indicating how many times a Cell has been visited by the Ant.
    * @return boolean representing the rotation
-   *         based on the Convention defined in antconst.Const
+   * based on the Convention defined in antconst.Const
    */
   private boolean getInvertedRotationDir(int i) {
     return !getRotationDir(i);
@@ -277,9 +277,10 @@ public class AntGrid implements Grid {
   private int applyYOffset(int y) {
     y += yOffset;
     if (y < 0) {
-      y = currentHeight + y;
-    }
-    y = y % currentHeight;
+      y = currentHeight + y;}
+//    } else if (y >= currentHeight) {
+//      y = y % currentHeight;
+//    }
     return y;
   }
 
@@ -293,9 +294,10 @@ public class AntGrid implements Grid {
   private int applyXOffset(int x) {
     x += xOffset;
     if (x < 0) {
-      x = currentWidth + x;
-    }
-    x = x % currentWidth;
+      x = currentWidth + x;}
+//    } else if (x >= currentWidth) {
+//      x = x % currentWidth;
+//    }
     return x;
   }
 
