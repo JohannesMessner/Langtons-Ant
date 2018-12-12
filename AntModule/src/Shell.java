@@ -4,6 +4,7 @@ import singleant.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -212,6 +213,7 @@ public class Shell {
       return;
     }
     grid.resize(x, y);
+    ant = new ArrayList<Ant>(grid.getAnts().values()).get(0);
   }
 
   private static void handleHelp() {

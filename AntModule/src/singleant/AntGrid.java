@@ -68,6 +68,10 @@ public class AntGrid implements Grid {
   @Override
   public Map<Coordinate, Ant> getAnts() {
     Map<Coordinate, Ant> m = new HashMap<>();
+    if (ant == null){
+      m.put(null, null);
+      return m;
+    }
     m.put(ant.getCoordinates(), ant);
     return m;
   }
@@ -318,6 +322,23 @@ public class AntGrid implements Grid {
     this.currentHeight = rows;
     this.currentWidth = cols;
     deleteOutOfBoundsCells();
+    deleteOutOfBoundsAnt();
+  }
+
+  private void deleteOutOfBoundsAnt(){
+    boolean xOutOfBounds = ant.getX() >= applyXOffset(currentWidth)
+            || ant.getX() < applyXOffset(0);
+    boolean yOutOfBounds = ant.getY() >= applyYOffset(currentHeight)
+            || ant.getY() < applyYOffset(0);
+
+    if (xOutOfBounds || yOutOfBounds) {
+      /*
+      Here it is not necessary to call deleteAnts() since Cells that are
+      out of bounds will be deleted anyway.
+      This spares us from iterating over all the Cells.
+       */
+      this.ant = null;
+    }
   }
 
   /**
@@ -328,7 +349,11 @@ public class AntGrid implements Grid {
     for (Coordinate cor : playingField.keySet()) {
       boolean xOutOfBounds = cor.getX() >= applyXOffset(currentWidth);
       boolean yOutOfBounds = cor.getY() >= applyYOffset(currentHeight);
+
       if (xOutOfBounds || yOutOfBounds) {
+        if (playingField.get(cor).getState().hasAnt()){
+          this.ant = null;
+        }
         playingField.put(cor, null);
       }
     }
