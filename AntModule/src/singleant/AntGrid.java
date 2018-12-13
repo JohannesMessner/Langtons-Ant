@@ -325,6 +325,15 @@ public class AntGrid implements Grid {
     deleteOutOfBoundsAnt();
   }
 
+  /**
+   * Deletes the Ant if it has "fallen off" the Grid.
+   *
+   * Method is optimized to be called after a call of deleteOutOfBoundsCells().
+   * Calling this Method without calling deleteOutOfBoundsCells() will result
+   * in unwanted behaviour.
+   * If you want to call this Method without calling deleteOutOfBoundsCells(),
+   * you need to modify it slightly.
+   */
   private void deleteOutOfBoundsAnt() {
     boolean xOutOfBounds = ant.getX() >= applyXOffset(currentWidth)
             || ant.getX() < applyXOffset(0);
@@ -334,8 +343,10 @@ public class AntGrid implements Grid {
     if (xOutOfBounds || yOutOfBounds) {
       /*
       Here it is not necessary to call deleteAnts() since Cells that are
-      out of bounds will be deleted anyway.
+      out of bounds will be deleted with a call of deleteOutOfBoundsCells().
       This spares us from iterating over all the Cells.
+      Modify accordingly if you want to call this method independently of
+      deleteOutOfBoundsCells().
        */
       this.ant = null;
     }
