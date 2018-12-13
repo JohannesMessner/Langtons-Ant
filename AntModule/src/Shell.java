@@ -190,6 +190,7 @@ public class Shell {
 
   private static void handleClear() {
     grid.clear();
+    ant = new ArrayList<Ant>(grid.getAnts().values()).get(0);
   }
 
   private static void handlePrint() {
