@@ -335,6 +335,9 @@ public class AntGrid implements Grid {
    * you need to modify it slightly.
    */
   private void deleteOutOfBoundsAnt() {
+    if (this.ant == null) {
+      return;
+    }
     boolean xOutOfBounds = ant.getX() >= applyXOffset(currentWidth)
             || ant.getX() < applyXOffset(0);
     boolean yOutOfBounds = ant.getY() >= applyYOffset(currentHeight)
