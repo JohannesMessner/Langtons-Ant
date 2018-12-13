@@ -68,7 +68,7 @@ public class AntGrid implements Grid {
   @Override
   public Map<Coordinate, Ant> getAnts() {
     Map<Coordinate, Ant> m = new HashMap<>();
-    if (ant == null){
+    if (ant == null) {
       m.put(null, null);
       return m;
     }
@@ -325,7 +325,7 @@ public class AntGrid implements Grid {
     deleteOutOfBoundsAnt();
   }
 
-  private void deleteOutOfBoundsAnt(){
+  private void deleteOutOfBoundsAnt() {
     boolean xOutOfBounds = ant.getX() >= applyXOffset(currentWidth)
             || ant.getX() < applyXOffset(0);
     boolean yOutOfBounds = ant.getY() >= applyYOffset(currentHeight)
@@ -346,17 +346,35 @@ public class AntGrid implements Grid {
    */
   private void deleteOutOfBoundsCells() {
 
+    List<Coordinate> outOfBoundsCells = getOutOfBoundsCells();
+
+    for (Coordinate cor : outOfBoundsCells) {
+      playingField.remove(cor);
+    }
+  }
+
+  /**
+   * Computes all the Cells that are out of bounds in regard to the current Grid.
+   *
+   * @return List of Coordinates of the out of bounds Cells
+   */
+  private List<Coordinate> getOutOfBoundsCells() {
+
+    List<Coordinate> outOfBoundsCells = new ArrayList<>();
     for (Coordinate cor : playingField.keySet()) {
-      boolean xOutOfBounds = cor.getX() >= applyXOffset(currentWidth);
-      boolean yOutOfBounds = cor.getY() >= applyYOffset(currentHeight);
+      boolean xOutOfBounds = cor.getX() >= applyXOffset(currentWidth)
+              || ant.getX() < applyXOffset(0);
+      boolean yOutOfBounds = cor.getY() >= applyYOffset(currentHeight)
+              || ant.getY() < applyYOffset(0);
 
       if (xOutOfBounds || yOutOfBounds) {
-        if (playingField.get(cor).getState().hasAnt()){
+        if (playingField.get(cor).getState().hasAnt()) {
           this.ant = null;
         }
-        playingField.put(cor, null);
+        outOfBoundsCells.add(cor);
       }
     }
+    return outOfBoundsCells;
   }
 
   /**
