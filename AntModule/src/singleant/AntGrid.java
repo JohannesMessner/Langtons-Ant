@@ -374,9 +374,9 @@ public class AntGrid implements Grid {
     List<Coordinate> outOfBoundsCells = new ArrayList<>();
     for (Coordinate cor : playingField.keySet()) {
       boolean xOutOfBounds = cor.getX() >= applyXOffset(currentWidth)
-              || ant.getX() < applyXOffset(0);
+              || cor.getX() < applyXOffset(0);
       boolean yOutOfBounds = cor.getY() >= applyYOffset(currentHeight)
-              || ant.getY() < applyYOffset(0);
+              || cor.getY() < applyYOffset(0);
 
       if (xOutOfBounds || yOutOfBounds) {
         if (playingField.get(cor).getState().hasAnt()) {
