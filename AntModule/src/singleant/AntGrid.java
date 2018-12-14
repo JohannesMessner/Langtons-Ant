@@ -122,15 +122,27 @@ public class AntGrid implements Grid {
    * @param ant Ant to be put back on the grid
    */
   private void putBackOnGrid(Ant ant) {
-    int antX = (ant.getX() % currentWidth);
-    int antY = (ant.getY() % currentHeight);
-    if (antX < 0) {
-      antX = currentWidth + antX;
+
+    int x = ant.getX();
+    int y = ant.getY();
+
+    boolean steppedOutDown = y >= applyYOffset(currentHeight);
+    boolean steppedOutUp = y < applyYOffset(0);
+    boolean steppedOutLeft = x < applyXOffset(0);
+    boolean steppedOutRight = x >= applyXOffset(currentWidth);
+
+    if (steppedOutUp) {
+      y = applyYOffset(currentHeight - 1);
+    } else if (steppedOutDown) {
+      y = applyYOffset(0);
     }
-    if (antY < 0) {
-      antY = currentHeight + antY;
+    if (steppedOutLeft) {
+      x = applyXOffset(currentWidth - 1);
+    } else if (steppedOutRight) {
+      x = applyXOffset(0);
     }
-    ant.reposition(antX, antY);
+
+    ant.reposition(x, y);
   }
 
   /**
@@ -258,7 +270,6 @@ public class AntGrid implements Grid {
     j = applyYOffset(j);
     List<Cell> lst = new ArrayList<>(currentWidth);
 
-    //int i = applyXOffset(0);
     for (int i = 0; i < currentWidth; i++) {
       int x = applyXOffset(i);
       Cell c = playingField.get(new Coordinate(x, j));
@@ -283,9 +294,7 @@ public class AntGrid implements Grid {
     if (y < 0) {
       y = currentHeight + y;
     }
-//    } else if (y >= currentHeight) {
-//      y = y % currentHeight;
-//    }
+
     return y;
   }
 
@@ -301,9 +310,7 @@ public class AntGrid implements Grid {
     if (x < 0) {
       x = currentWidth + x;
     }
-//    } else if (x >= currentWidth) {
-//      x = x % currentWidth;
-//    }
+
     return x;
   }
 
@@ -327,7 +334,7 @@ public class AntGrid implements Grid {
 
   /**
    * Deletes the Ant if it has "fallen off" the Grid.
-   *
+   * <p>
    * Method is optimized to be called after a call of deleteOutOfBoundsCells().
    * Calling this Method without calling deleteOutOfBoundsCells() will result
    * in unwanted behaviour.
