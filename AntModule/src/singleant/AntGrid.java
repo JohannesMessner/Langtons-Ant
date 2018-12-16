@@ -6,8 +6,10 @@ public class AntGrid implements Grid {
 
   private HashMap<Coordinate, Cell> playingField;
   private Ant ant;
-  private int currentHeight;
-  private int currentWidth;
+  private int firstX;
+  private int lastX;
+  private int firstY;
+  private int lastY;
   private final boolean[] configuration;
   private int xOffset;
   private int yOffset;
@@ -23,8 +25,12 @@ public class AntGrid implements Grid {
    *                      of the Grid's Ant
    */
   public AntGrid(int height, int width, boolean[] configuration) {
-    this.currentHeight = height;
-    this.currentWidth = width;
+//    this.currentHeight = height;
+//    this.currentWidth = width;
+    this.firstX = 0;
+    this.lastX = width - 1;
+    this.firstY = 0;
+    this.lastY = height - 1;
     this.configuration = Arrays.copyOf(configuration, configuration.length);
     this.playingField = new LinkedHashMap<>();
     this.cellHistory = new LinkedList<>();
@@ -126,44 +132,20 @@ public class AntGrid implements Grid {
     int x = ant.getX();
     int y = ant.getY();
 
-//    boolean steppedOutDown = y >= applyYOffset(currentHeight);
-//    boolean steppedOutUp = y < applyYOffset(0);
-//    boolean steppedOutLeft = x < applyXOffset(0);
-//    boolean steppedOutRight = x >= applyXOffset(currentWidth);
-//
-//    if (steppedOutUp) {
-//      y = applyYOffset(currentHeight - 1);
-//      System.out.println("up");
-//    } else if (steppedOutDown) {
-//      y = applyYOffset(0);
-//      System.out.println("down");
-//    }
-//    if (steppedOutLeft) {
-//      x = applyXOffset(currentWidth - 1);
-//      System.out.println("left");
-//    } else if (steppedOutRight) {
-//      x = applyXOffset(0);
-//      System.out.println("right");
-//    }
-
-    boolean steppedOutDown = y >= currentHeight;
-    boolean steppedOutUp = y < 0;
-    boolean steppedOutLeft = x < 0;
-    boolean steppedOutRight = x >= currentWidth;
+    boolean steppedOutDown = y > lastY;
+    boolean steppedOutUp = y < firstY;
+    boolean steppedOutLeft = x < firstX;
+    boolean steppedOutRight = x > lastX;
 
     if (steppedOutUp) {
-      y = currentHeight - 1;
-      //System.out.println("up");
+      y = lastY;
     } else if (steppedOutDown) {
-      y = 0;
-      //System.out.println("down");
+      y = firstY;
     }
     if (steppedOutLeft) {
-      x = currentWidth - 1;
-      //System.out.println("left");
+      x = lastX;
     } else if (steppedOutRight) {
-      x = 0;
-      //System.out.println("right");
+      x = firstX;
     }
     ant.reposition(x, y);
   }
@@ -246,7 +228,7 @@ public class AntGrid implements Grid {
    */
   @Override
   public int getWidth() {
-    return currentWidth;
+    return lastX - firstX + 1;
   }
 
   /**
@@ -256,7 +238,7 @@ public class AntGrid implements Grid {
    */
   @Override
   public int getHeight() {
-    return currentHeight;
+    return lastY - firstY + 1;
   }
 
   /**
@@ -268,13 +250,12 @@ public class AntGrid implements Grid {
   @Override
   public List<Cell> getColumn(int i) {
     i = applyXOffset(i);
-    List<Cell> lst = new ArrayList<>(currentHeight);
+    List<Cell> lst = new ArrayList<>(getHeight());
 
-    for (int j = 0; j < currentHeight; j++) {
-      int y = applyYOffset(j);
-      Cell c = playingField.get(new Coordinate(i, y));
+    for (int j = firstY; j < lastY + 1; j++) {
+      Cell c = playingField.get(new Coordinate(i, j));
       if (c == null) {
-        lst.add(new AntCell(i, y));
+        lst.add(new AntCell(i, j));
       } else {
         lst.add(c);
       }
@@ -291,13 +272,12 @@ public class AntGrid implements Grid {
   @Override
   public List<Cell> getRow(int j) {
     j = applyYOffset(j);
-    List<Cell> lst = new ArrayList<>(currentWidth);
+    List<Cell> lst = new ArrayList<>(getWidth());
 
-    for (int i = 0; i < currentWidth; i++) {
-      int x = applyXOffset(i);
-      Cell c = playingField.get(new Coordinate(x, j));
+    for (int i = firstX; i < lastX + 1; i++) {
+      Cell c = playingField.get(new Coordinate(i, j));
       if (c == null) {
-        lst.add(new AntCell(x, j));
+        lst.add(new AntCell(i, j));
       } else {
         lst.add(c);
       }
@@ -314,11 +294,6 @@ public class AntGrid implements Grid {
    */
   private int applyYOffset(int y) {
     y += yOffset;
-    if (y < 0) {
-      y = currentHeight + y;
-    }
-    y = y % currentHeight;
-
     return y;
   }
 
@@ -331,11 +306,6 @@ public class AntGrid implements Grid {
    */
   private int applyXOffset(int x) {
     x += xOffset;
-    if (x < 0) {
-      x = currentWidth + x;
-    }
-    x = x % currentWidth;
-
     return x;
   }
 
@@ -347,178 +317,50 @@ public class AntGrid implements Grid {
    */
   @Override
   public void resize(int cols, int rows) {
-    int yDiff = currentHeight - rows;
-    int xDiff = currentWidth - cols;
+    int yDiff = getHeight() - rows;
+    int xDiff = getWidth() - cols;
+
+    this.firstY = firstY + yDiff / 2;
+    this.lastY = calculateLastY(yDiff);
+
+    this.firstX = firstX + (xDiff / 2);
+    this.lastX = calculateLastX(xDiff);
+
     this.yOffset += yDiff / 2;
     this.xOffset += xDiff / 2;
-    int oldHeight = currentHeight;
-    int oldWidth = currentWidth;
-    this.currentHeight = rows;
-    this.currentWidth = cols;
-    wrapGrid(xDiff / 2, yDiff / 2, oldWidth, oldHeight);
+
     deleteOutOfBoundsCells();
     deleteOutOfBoundsAnt();
   }
 
-  private void wrapGrid(int numOfColumns, int numOfRows, int oldWidth, int oldHeight) {
-//    int oldXOffset = this.xOffset - numOfColumns;
-//    int oldYOffset = this.yOffset - numOfRows;
-
-    if (numOfColumns > 0) {
-      wrapX(numOfColumns);
+  private int calculateLastY(int yDiff) {
+    int y;
+    if (yDiff % 2 == 0) {
+      y = lastY - yDiff / 2;
     } else {
-      unwrapX(numOfColumns, oldWidth);
+      y = lastY - (yDiff / 2);
+      if (yDiff < 0) {
+        y++;
+      } else if (yDiff > 0) {
+        y--;
+      }
     }
-    if (numOfRows > 0) {
-      wrapY(numOfRows);
+    return y;
+  }
+
+  private int calculateLastX(int xDiff) {
+    int x;
+    if (xDiff % 2 == 0) {
+      x = lastX - xDiff / 2;
     } else {
-      unwrapY(numOfRows, oldHeight);
-    }
-    if (numOfColumns > 0 && numOfRows > 0) {
-      wrapXY(numOfColumns, numOfRows);
-    } else {
-      //unwrapXY();
-    }
-  }
-
-  private void unwrapX(int numOfColumns, int oldWidth) {
-    int oldXOffset = this.xOffset - numOfColumns;
-    if (numOfColumns > 0 || oldXOffset <= 0) {
-      return;
-    }
-
-    numOfColumns = - numOfColumns;
-    int columnsToMove = Math.max(numOfColumns, oldXOffset);
-
-//    for (int x = 0; x < columnsToMove; x++) {
-//      for (int y = 0; y < currentHeight + 1; y++) {
-//
-//        Cell c = playingField.get(new Coordinate(x, y));
-//        if (c != null) {
-//          State st = c.getState();
-//          playingField.remove(new Coordinate(x, y));
-//          if (st.hasAnt()) {
-//            ant.reposition(oldWidth + x, y);
-//          }
-//        }
-//        playingField.put(new Coordinate(oldWidth + x , y), c);
-//      }
-//    }
-
-
-    for (int i = 0; i < numOfColumns * 2 + 1; i++) {
-      for (int x = 0; x < oldXOffset; x++) {
-        for (int y = 0; y < currentHeight + 1; y++) {
-
-          Cell c1 = playingField.get(new Coordinate(x, y));
-          int newX = x - 1;
-          if (newX < 0) {
-            newX = oldWidth + i;
-          }
-          if (c1 != null) {
-            State st = c1.getState();
-            playingField.remove(new Coordinate(x, y));
-            if (st.hasAnt()) {
-              ant.reposition(newX, y);
-            }
-          }
-          playingField.put(new Coordinate(newX, y), c1);
-        }
+      x = lastX - (xDiff / 2);
+      if (xDiff < 0) {
+        x++;
+      } else if (xDiff > 0) {
+        x--;
       }
     }
-  }
-
-  private void unwrapY(int numOfRows, int oldHeight) {
-    int oldYOffset = this.yOffset - numOfRows;
-    if (numOfRows > 0 || oldYOffset <= 0) {
-      return;
-    }
-
-    numOfRows = - numOfRows;
-    int rowsToMove = Math.max(numOfRows, oldYOffset);
-//    for (int y = 0; y < rowsToMove; y++) {
-//      for (int x = 0; x < currentWidth + 1; x++) {
-//
-//        Cell c = playingField.get(new Coordinate(x, y));
-//        if (c != null) {
-//          State st = c.getState();
-//          playingField.remove(new Coordinate(x, y));
-//          if (st.hasAnt()) {
-//            ant.reposition(x, oldHeight + y);
-//          }
-//        }
-//        playingField.put(new Coordinate(x, oldHeight + y), c);
-//      }
-//    }
-
-    for (int i = 0; i < numOfRows * 2 + 1; i++) {
-      for (int y = 0; y < oldYOffset; y++) {
-        for (int x = 0; x < currentWidth + 1; x++) {
-
-          Cell c1 = playingField.get(new Coordinate(x, y));
-          int newY = y - 1;
-          if (newY < 0) {
-            newY = oldHeight + i;
-          }
-          if (c1 != null) {
-            State st = c1.getState();
-            playingField.remove(new Coordinate(x, y));
-            if (st.hasAnt()) {
-              ant.reposition(x, newY);
-            }
-          }
-          playingField.put(new Coordinate(x, newY), c1);
-        }
-      }
-    }
-
-  }
-
-  private void wrapXY(int numOfColumns, int numOfRows) {
-    if (numOfColumns <= 0 || numOfRows <= 0) {
-      return;
-    }
-    for (int x = currentWidth; x < currentHeight + numOfColumns; x++) {
-      for (int y = currentHeight; y < currentHeight + numOfRows; y++) {
-        Cell c = playingField.get(new Coordinate(x, y));
-        if (c != null && c.getState().hasAnt()) {
-          ant.reposition(x - currentWidth, y - currentHeight);
-        }
-        playingField.put(new Coordinate(x - currentWidth, y - currentHeight), c);
-      }
-    }
-  }
-
-  private void wrapX(int numOfColumns) {
-    if (numOfColumns <= 0) {
-      return;
-    }
-    for (int x = currentWidth; x < currentWidth + numOfColumns; x++) {
-      for (int y = 0; y < currentHeight + 1; y++) {
-        Cell c = playingField.get(new Coordinate(x, y));
-        if (c != null && c.getState().hasAnt()) {
-          ant.reposition(x - currentWidth, y);
-        }
-        playingField.put(new Coordinate(x - currentWidth, y), c);
-      }
-    }
-  }
-
-  private void wrapY(int numOfRows) {
-    if (numOfRows <= 0) {
-      return;
-    }
-    for (int y = currentHeight; y < currentHeight + numOfRows; y++) {
-      for (int x = 0; x < currentWidth + 1; x++) {
-        Cell c = playingField.get(new Coordinate(x, y));
-        if (c != null && c.getState().hasAnt()) {
-          ant.reposition(x, y - currentHeight);
-        }
-        playingField.put(new Coordinate(x, y - currentHeight), c);
-      }
-    }
-
-
+    return x;
   }
 
 
@@ -535,8 +377,8 @@ public class AntGrid implements Grid {
     if (this.ant == null) {
       return;
     }
-    boolean xOutOfBounds = ant.getX() >= currentWidth;
-    boolean yOutOfBounds = ant.getY() >= currentHeight;
+    boolean xOutOfBounds = ant.getX() > lastX || ant.getX() < firstX;
+    boolean yOutOfBounds = ant.getY() > lastY || ant.getY() < firstY;
 
     if (xOutOfBounds || yOutOfBounds) {
       /*
@@ -547,7 +389,6 @@ public class AntGrid implements Grid {
       deleteOutOfBoundsCells().
        */
       this.ant = null;
-      //clearAnts();
     }
   }
 
@@ -572,15 +413,12 @@ public class AntGrid implements Grid {
 
     List<Coordinate> outOfBoundsCells = new ArrayList<>();
     for (Coordinate cor : playingField.keySet()) {
-      boolean xOutOfBounds = cor.getX() >= applyXOffset(currentWidth)
+      boolean xOutOfBounds = cor.getX() >= applyXOffset(getWidth())
               || cor.getX() < applyXOffset(0);
-      boolean yOutOfBounds = cor.getY() >= applyYOffset(currentHeight)
+      boolean yOutOfBounds = cor.getY() >= applyYOffset(getHeight())
               || cor.getY() < applyYOffset(0);
 
       if (xOutOfBounds || yOutOfBounds) {
-//        if (playingField.get(cor).getState().hasAnt()) {
-//          this.ant = null;
-//        }
         outOfBoundsCells.add(cor);
       }
     }
@@ -591,13 +429,10 @@ public class AntGrid implements Grid {
 
     List<Coordinate> outOfBoundsCells = new ArrayList<>();
     for (Coordinate cor : playingField.keySet()) {
-      boolean xOutOfBounds = cor.getX() > currentWidth;
-      boolean yOutOfBounds = cor.getY() > currentHeight;
+      boolean xOutOfBounds = cor.getX() > lastX || cor.getX() < firstX;
+      boolean yOutOfBounds = cor.getY() > lastY || cor.getY() < firstY;
 
       if (xOutOfBounds || yOutOfBounds) {
-//        if (playingField.get(cor).getState().hasAnt()) {
-//          this.ant = null;
-//        }
         outOfBoundsCells.add(cor);
       }
     }
@@ -609,8 +444,8 @@ public class AntGrid implements Grid {
    */
   @Override
   public void clear() {
-    for (int i = 0; i < currentWidth; i++) {
-      for (int j = 0; j < currentHeight; j++) {
+    for (int i = firstX; i < lastX + 1; i++) {
+      for (int j = firstY; j < lastY + 1; j++) {
         Coordinate cor = new Coordinate(i, j);
         Cell cell = playingField.get(cor);
         if (cell != null) {

@@ -190,7 +190,7 @@ public class Shell {
 
   private static void handleClear() {
     grid.clear();
-    ant = new ArrayList<Ant>(grid.getAnts().values()).get(0);
+    refreshAnt();
   }
 
   private static void handlePrint() {
@@ -214,7 +214,7 @@ public class Shell {
       return;
     }
     grid.resize(x, y);
-    ant = new ArrayList<Ant>(grid.getAnts().values()).get(0);
+    refreshAnt();
   }
 
   private static void handleHelp() {
@@ -268,6 +268,13 @@ public class Shell {
       }
     }
     return Const.INVALID_COMMAND;
+  }
+
+  /**
+   * Sets the Shell's ant to be the Grid's ant.
+   */
+  private static void refreshAnt() {
+    ant = new ArrayList<Ant>(grid.getAnts().values()).get(0);
   }
 
   /**
