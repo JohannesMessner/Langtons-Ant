@@ -25,8 +25,6 @@ public class AntGrid implements Grid {
    *                      of the Grid's Ant
    */
   public AntGrid(int height, int width, boolean[] configuration) {
-//    this.currentHeight = height;
-//    this.currentWidth = width;
     this.firstX = 0;
     this.lastX = width - 1;
     this.firstY = 0;

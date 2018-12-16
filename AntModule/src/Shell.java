@@ -170,13 +170,13 @@ public class Shell {
   }
 
   private static void handleStep() {
-    if (ant == null) {
-      System.out.println(Const.NO_ANT_ERROR);
-      return;
-    }
     if (sc.hasNextInt()) {
       int numOfSteps = sc.nextInt();
       if (numOfSteps >= 1) {
+        if (ant == null) {
+          System.out.println(Const.NO_ANT_ERROR);
+          return;
+        }
         grid.performStep(numOfSteps);
       } else if (numOfSteps < 0) {
         grid.reset(-numOfSteps);
