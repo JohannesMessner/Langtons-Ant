@@ -284,7 +284,7 @@ public class Shell {
         String str = "";
         str = str + getColorSequence(st.getTimesVisited());
 
-        if (st.hasAnt()) {
+        if (st.hasAnt() && ant != null) {
           if (ant.getOrientation() == Direction.UP) {
             str = str + "^";
           } else if (ant.getOrientation() == Direction.RIGHT) {

@@ -126,22 +126,45 @@ public class AntGrid implements Grid {
     int x = ant.getX();
     int y = ant.getY();
 
-    boolean steppedOutDown = y >= applyYOffset(currentHeight);
-    boolean steppedOutUp = y < applyYOffset(0);
-    boolean steppedOutLeft = x < applyXOffset(0);
-    boolean steppedOutRight = x >= applyXOffset(currentWidth);
+//    boolean steppedOutDown = y >= applyYOffset(currentHeight);
+//    boolean steppedOutUp = y < applyYOffset(0);
+//    boolean steppedOutLeft = x < applyXOffset(0);
+//    boolean steppedOutRight = x >= applyXOffset(currentWidth);
+//
+//    if (steppedOutUp) {
+//      y = applyYOffset(currentHeight - 1);
+//      System.out.println("up");
+//    } else if (steppedOutDown) {
+//      y = applyYOffset(0);
+//      System.out.println("down");
+//    }
+//    if (steppedOutLeft) {
+//      x = applyXOffset(currentWidth - 1);
+//      System.out.println("left");
+//    } else if (steppedOutRight) {
+//      x = applyXOffset(0);
+//      System.out.println("right");
+//    }
+
+    boolean steppedOutDown = y >= currentHeight;
+    boolean steppedOutUp = y < 0;
+    boolean steppedOutLeft = x < 0;
+    boolean steppedOutRight = x >= currentWidth;
 
     if (steppedOutUp) {
-      y = applyYOffset(currentHeight - 1);
+      y = currentHeight - 1;
+      //System.out.println("up");
     } else if (steppedOutDown) {
-      y = applyYOffset(0);
+      y = 0;
+      //System.out.println("down");
     }
     if (steppedOutLeft) {
-      x = applyXOffset(currentWidth - 1);
+      x = currentWidth - 1;
+      //System.out.println("left");
     } else if (steppedOutRight) {
-      x = applyXOffset(0);
+      x = 0;
+      //System.out.println("right");
     }
-
     ant.reposition(x, y);
   }
 
@@ -294,6 +317,7 @@ public class AntGrid implements Grid {
     if (y < 0) {
       y = currentHeight + y;
     }
+    y = y % currentHeight;
 
     return y;
   }
@@ -310,6 +334,7 @@ public class AntGrid implements Grid {
     if (x < 0) {
       x = currentWidth + x;
     }
+    x = x % currentWidth;
 
     return x;
   }
@@ -326,11 +351,176 @@ public class AntGrid implements Grid {
     int xDiff = currentWidth - cols;
     this.yOffset += yDiff / 2;
     this.xOffset += xDiff / 2;
+    int oldHeight = currentHeight;
+    int oldWidth = currentWidth;
     this.currentHeight = rows;
     this.currentWidth = cols;
+    wrapGrid(xDiff / 2, yDiff / 2, oldWidth, oldHeight);
     deleteOutOfBoundsCells();
     deleteOutOfBoundsAnt();
   }
+
+  private void wrapGrid(int numOfColumns, int numOfRows, int oldWidth, int oldHeight) {
+//    int oldXOffset = this.xOffset - numOfColumns;
+//    int oldYOffset = this.yOffset - numOfRows;
+
+    if (numOfColumns > 0) {
+      wrapX(numOfColumns);
+    } else {
+      unwrapX(numOfColumns, oldWidth);
+    }
+    if (numOfRows > 0) {
+      wrapY(numOfRows);
+    } else {
+      unwrapY(numOfRows, oldHeight);
+    }
+    if (numOfColumns > 0 && numOfRows > 0) {
+      wrapXY(numOfColumns, numOfRows);
+    } else {
+      //unwrapXY();
+    }
+  }
+
+  private void unwrapX(int numOfColumns, int oldWidth) {
+    int oldXOffset = this.xOffset - numOfColumns;
+    if (numOfColumns > 0 || oldXOffset <= 0) {
+      return;
+    }
+
+    numOfColumns = - numOfColumns;
+    int columnsToMove = Math.max(numOfColumns, oldXOffset);
+
+//    for (int x = 0; x < columnsToMove; x++) {
+//      for (int y = 0; y < currentHeight + 1; y++) {
+//
+//        Cell c = playingField.get(new Coordinate(x, y));
+//        if (c != null) {
+//          State st = c.getState();
+//          playingField.remove(new Coordinate(x, y));
+//          if (st.hasAnt()) {
+//            ant.reposition(oldWidth + x, y);
+//          }
+//        }
+//        playingField.put(new Coordinate(oldWidth + x , y), c);
+//      }
+//    }
+
+
+    for (int i = 0; i < numOfColumns * 2 + 1; i++) {
+      for (int x = 0; x < oldXOffset; x++) {
+        for (int y = 0; y < currentHeight + 1; y++) {
+
+          Cell c1 = playingField.get(new Coordinate(x, y));
+          int newX = x - 1;
+          if (newX < 0) {
+            newX = oldWidth + i;
+          }
+          if (c1 != null) {
+            State st = c1.getState();
+            playingField.remove(new Coordinate(x, y));
+            if (st.hasAnt()) {
+              ant.reposition(newX, y);
+            }
+          }
+          playingField.put(new Coordinate(newX, y), c1);
+        }
+      }
+    }
+  }
+
+  private void unwrapY(int numOfRows, int oldHeight) {
+    int oldYOffset = this.yOffset - numOfRows;
+    if (numOfRows > 0 || oldYOffset <= 0) {
+      return;
+    }
+
+    numOfRows = - numOfRows;
+    int rowsToMove = Math.max(numOfRows, oldYOffset);
+//    for (int y = 0; y < rowsToMove; y++) {
+//      for (int x = 0; x < currentWidth + 1; x++) {
+//
+//        Cell c = playingField.get(new Coordinate(x, y));
+//        if (c != null) {
+//          State st = c.getState();
+//          playingField.remove(new Coordinate(x, y));
+//          if (st.hasAnt()) {
+//            ant.reposition(x, oldHeight + y);
+//          }
+//        }
+//        playingField.put(new Coordinate(x, oldHeight + y), c);
+//      }
+//    }
+
+    for (int i = 0; i < numOfRows * 2 + 1; i++) {
+      for (int y = 0; y < oldYOffset; y++) {
+        for (int x = 0; x < currentWidth + 1; x++) {
+
+          Cell c1 = playingField.get(new Coordinate(x, y));
+          int newY = y - 1;
+          if (newY < 0) {
+            newY = oldHeight + i;
+          }
+          if (c1 != null) {
+            State st = c1.getState();
+            playingField.remove(new Coordinate(x, y));
+            if (st.hasAnt()) {
+              ant.reposition(x, newY);
+            }
+          }
+          playingField.put(new Coordinate(x, newY), c1);
+        }
+      }
+    }
+
+  }
+
+  private void wrapXY(int numOfColumns, int numOfRows) {
+    if (numOfColumns <= 0 || numOfRows <= 0) {
+      return;
+    }
+    for (int x = currentWidth; x < currentHeight + numOfColumns; x++) {
+      for (int y = currentHeight; y < currentHeight + numOfRows; y++) {
+        Cell c = playingField.get(new Coordinate(x, y));
+        if (c != null && c.getState().hasAnt()) {
+          ant.reposition(x - currentWidth, y - currentHeight);
+        }
+        playingField.put(new Coordinate(x - currentWidth, y - currentHeight), c);
+      }
+    }
+  }
+
+  private void wrapX(int numOfColumns) {
+    if (numOfColumns <= 0) {
+      return;
+    }
+    for (int x = currentWidth; x < currentWidth + numOfColumns; x++) {
+      for (int y = 0; y < currentHeight + 1; y++) {
+        Cell c = playingField.get(new Coordinate(x, y));
+        if (c != null && c.getState().hasAnt()) {
+          ant.reposition(x - currentWidth, y);
+        }
+        playingField.put(new Coordinate(x - currentWidth, y), c);
+      }
+    }
+  }
+
+  private void wrapY(int numOfRows) {
+    if (numOfRows <= 0) {
+      return;
+    }
+    for (int y = currentHeight; y < currentHeight + numOfRows; y++) {
+      for (int x = 0; x < currentWidth + 1; x++) {
+        Cell c = playingField.get(new Coordinate(x, y));
+        if (c != null && c.getState().hasAnt()) {
+          ant.reposition(x, y - currentHeight);
+        }
+        playingField.put(new Coordinate(x, y - currentHeight), c);
+      }
+    }
+
+
+  }
+
 
   /**
    * Deletes the Ant if it has "fallen off" the Grid.
@@ -345,20 +535,19 @@ public class AntGrid implements Grid {
     if (this.ant == null) {
       return;
     }
-    boolean xOutOfBounds = ant.getX() >= applyXOffset(currentWidth)
-            || ant.getX() < applyXOffset(0);
-    boolean yOutOfBounds = ant.getY() >= applyYOffset(currentHeight)
-            || ant.getY() < applyYOffset(0);
+    boolean xOutOfBounds = ant.getX() >= currentWidth;
+    boolean yOutOfBounds = ant.getY() >= currentHeight;
 
     if (xOutOfBounds || yOutOfBounds) {
       /*
-      Here it is not necessary to call deleteAnts() since Cells that are
+      Here it is not necessary to call clearAnts() since Cells that are
       out of bounds will be deleted with a call of deleteOutOfBoundsCells().
       This spares us from iterating over all the Cells.
       Modify accordingly if you want to call this method independently of
       deleteOutOfBoundsCells().
        */
       this.ant = null;
+      //clearAnts();
     }
   }
 
@@ -367,7 +556,7 @@ public class AntGrid implements Grid {
    */
   private void deleteOutOfBoundsCells() {
 
-    List<Coordinate> outOfBoundsCells = getOutOfBoundsCells();
+    List<Coordinate> outOfBoundsCells = getOutOfBoundsCellsB();
 
     for (Coordinate cor : outOfBoundsCells) {
       playingField.remove(cor);
@@ -389,9 +578,26 @@ public class AntGrid implements Grid {
               || cor.getY() < applyYOffset(0);
 
       if (xOutOfBounds || yOutOfBounds) {
-        if (playingField.get(cor).getState().hasAnt()) {
-          this.ant = null;
-        }
+//        if (playingField.get(cor).getState().hasAnt()) {
+//          this.ant = null;
+//        }
+        outOfBoundsCells.add(cor);
+      }
+    }
+    return outOfBoundsCells;
+  }
+
+  private List<Coordinate> getOutOfBoundsCellsB() {
+
+    List<Coordinate> outOfBoundsCells = new ArrayList<>();
+    for (Coordinate cor : playingField.keySet()) {
+      boolean xOutOfBounds = cor.getX() > currentWidth;
+      boolean yOutOfBounds = cor.getY() > currentHeight;
+
+      if (xOutOfBounds || yOutOfBounds) {
+//        if (playingField.get(cor).getState().hasAnt()) {
+//          this.ant = null;
+//        }
         outOfBoundsCells.add(cor);
       }
     }
