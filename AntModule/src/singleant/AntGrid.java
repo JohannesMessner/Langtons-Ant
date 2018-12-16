@@ -15,6 +15,8 @@ public class AntGrid implements Grid {
   private int yOffset;
   private int stepCount;
   private List<Cell> cellHistory;
+  private Coordinate lastAntCor;
+  private Direction lastAntDir;
 
   /**
    * Constructor that initializes all the Grid's variables and constants.
@@ -115,6 +117,8 @@ public class AntGrid implements Grid {
       newCell.updateState();
     }
 
+    lastAntCor = ant.getCoordinates();
+    lastAntDir = ant.getOrientation();
     cellHistory.add(0, newCell);
     stepCount++;
   }
@@ -192,6 +196,9 @@ public class AntGrid implements Grid {
    */
   @Override
   public void reset(int number) {
+    if (this.ant == null) {
+      this.ant = new Ant(lastAntDir, lastAntCor);
+    }
 
     for (int i = 0; i < number; i++) {
       if (cellHistory.size() <= 1) {
@@ -216,7 +223,7 @@ public class AntGrid implements Grid {
       cellHistory.remove(0);
       stepCount--;
     }
-
+    deleteOutOfBoundsAnt();
   }
 
   /**

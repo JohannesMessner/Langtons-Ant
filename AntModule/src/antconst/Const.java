@@ -58,7 +58,7 @@ public final class Const {
   public static final String NO_Y_ERROR = "Error! You must specify a y-coordinate for the ant";
   public static final String INVALID_COMMAND_ERROR = "Error! The command is invalid";
   public static final String NO_COMMAND_ERROR = "Error! You must specify a command";
-  public static final String NO_ANT_ERROR = "Error! There is no ant an the grid";
+  public static final String NO_ANT_ERROR = "Error! There is no ant on the grid";
 
   public static final String HELP_MESSAGE = "Help message goes here";
 

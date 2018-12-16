@@ -20,6 +20,11 @@ public class Ant {
     reposition(Const.DEFAUL_ANT_POSITION);
   }
 
+  public Ant(Direction dir, Coordinate cor) {
+    this.orientation = dir;
+    reposition(cor);
+  }
+
   /**
    * repositions the ant.
    *
