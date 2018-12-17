@@ -9,7 +9,7 @@ import singleant.Direction;
 
 
 /**
- * Class for constants of the whole program.
+ * Class for constants of the whole Langton's-Ant-program.
  */
 public final class Const {
   public static final boolean LEFT = true;

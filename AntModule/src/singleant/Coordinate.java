@@ -19,7 +19,7 @@ public class Coordinate {
   }
 
   /**
-   * Constructor setting a x ans y coordinate.
+   * Constructor setting an x and y coordinate.
    *
    * @param x int x-coordinate
    * @param y int y-coordinate

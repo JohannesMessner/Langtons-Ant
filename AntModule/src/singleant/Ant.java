@@ -20,7 +20,12 @@ public class Ant {
     reposition(Const.DEFAUL_ANT_POSITION);
   }
 
-  public Ant(Direction dir, Coordinate cor) {
+  /**
+   * Alternativ Constructor assigning custom direction and position.
+   * @param dir Direction of the Ant
+   * @param cor Coordinate of the Ant.
+   */
+  Ant(Direction dir, Coordinate cor) {
     this.orientation = dir;
     reposition(cor);
   }
@@ -77,6 +82,9 @@ public class Ant {
     return orientation;
   }
 
+  /**
+   * Modifies the Ant's Coordinate according to it's Direction.
+   */
   void stepForward() {
     if (orientation == Direction.UP) {
       ycor--;

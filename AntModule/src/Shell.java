@@ -17,7 +17,7 @@ import singleant.State;
 
 /**
  * Class handling text-based I/O for a Langton's Ant program.
- * Draws and prints the Grid.
+ * Draws and prints the Grid, including the Ant.
  */
 public class Shell {
 
@@ -134,7 +134,7 @@ public class Shell {
       System.out.println(Const.NO_HEIGHT_ERROR);
     }
     if (sc.hasNext()) {
-      config = toConfigArray(sc.next());
+      config = parseConfigArray(sc.next());
       if (config == null) {
         System.out.println(Const.INVALID_CONFIG_ERROR);
         return;
@@ -178,9 +178,17 @@ public class Shell {
     grid.clearAnts();
   }
 
+  /**
+   * Performs steps an resets.
+   * With parameter n > 0: performs n steps.
+   * With parameter n = 0: performs no steps.
+   * Without parameter: performs one step.
+   * With parameter n <= 0: performs abs(n) resets.
+   */
   private static void handleStep() {
     if (sc.hasNextInt()) {
       int numOfSteps = sc.nextInt();
+
       if (numOfSteps >= 1) {
         if (ant == null) {
           System.out.println(Const.NO_ANT_ERROR);
@@ -194,10 +202,12 @@ public class Shell {
       System.out.println(grid.getStepCount());
       return;
     }
+
     if (ant == null) {
       System.out.println(Const.NO_ANT_ERROR);
       return;
     }
+
     grid.performStep();
     System.out.println(grid.getStepCount());
     refreshAnt();
@@ -212,6 +222,9 @@ public class Shell {
     print();
   }
 
+  /**
+   * Resizes the Grid to new dimensions.
+   */
   private static void handleResize() {
     int x;
     int y;
@@ -249,7 +262,15 @@ public class Shell {
     System.out.println(Const.NO_COMMAND_ERROR);
   }
 
-  private static boolean[] toConfigArray(String str) {
+  /**
+   * Parses the String representing Configuration to a boolean[].
+   * Each boolean represents either 'left' or 'right',
+   * based on the convention stated in Const
+   *
+   * @param str String representing a configuration
+   * @return a boolean[] representing the same configuration
+   */
+  private static boolean[] parseConfigArray(String str) {
     int strLen = str.length();
     if (strLen > Const.MAX_CONFIGS || strLen < 2) {
       return null;
@@ -287,6 +308,7 @@ public class Shell {
 
   /**
    * Sets the Shell's ant to be the Grid's ant.
+   * Reflects all changes that occur on the Grid's ant.
    */
   private static void refreshAnt() {
     ant = new ArrayList<Ant>(grid.getAnts().values()).get(0);
@@ -329,11 +351,11 @@ public class Shell {
   /**
    * Maps a Cell's state to a color.
    *
-   * @param positionInCycle int number of times a Cell has been visited
+   * @param timesVisited int number of times a Cell has been visited by the ant
    * @return String color
    */
-  private static String getColorSequence(int positionInCycle) {
-    positionInCycle = (positionInCycle % configLen);
+  private static String getColorSequence(int timesVisited) {
+    int positionInCycle = (timesVisited % configLen);
 
     switch (positionInCycle) {
       case 0:
@@ -365,8 +387,14 @@ public class Shell {
     }
   }
 
-  private static String getColorSymbol(int positionInCycle) {
-    positionInCycle = (positionInCycle % configLen);
+  /**
+   * Maps a Cell's state to a symbol representing it.
+   *
+   * @param timesVisited int number of times a Cell has been visited by the ant
+   * @return String representig the Cells's state
+   */
+  private static String getColorSymbol(int timesVisited) {
+    int positionInCycle = (timesVisited % configLen);
     if (positionInCycle == 10) {
       return "A";
     }

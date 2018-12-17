@@ -23,7 +23,7 @@ public class State {
    * @param hasAnt         boolean indicating the presence of an Ant
    * @param positonInCycle int of numbers the Cell has been visited by an Ant
    */
-  public State(boolean hasAnt, int positonInCycle) {
+  State(boolean hasAnt, int positonInCycle) {
     this.hasAnt = hasAnt;
     this.timesVisited = positonInCycle;
   }

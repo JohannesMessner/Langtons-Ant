@@ -106,7 +106,7 @@ public class AntGrid implements Grid {
   }
 
   /**
-   * Perfoms multiple steps at once.
+   * Performs multiple steps.
    *
    * @param number int number of steps
    */
@@ -123,11 +123,31 @@ public class AntGrid implements Grid {
    */
   @Override
   public void performStep() {
+    stepOffOldCell();
+    AntCell newCell = stepOntoNewCell();
+
+    lastAntCor = ant.getCoordinates();
+    lastAntDir = ant.getOrientation();
+    cellHistory.add(0, newCell);
+    stepCount++;
+  }
+
+  /**
+   * Moves ant off of it's cell and updates the Cell.
+   */
+  private void stepOffOldCell() {
     AntCell oldCell = (AntCell) playingField.get(ant.getCoordinates());
     oldCell.updateState();
     ant.stepForward();
     putBackOnGrid(ant);
+  }
 
+  /**
+   * Rotates the Ant based on it's new Cell and updates that cell.
+   *
+   * @return AntCell the Cell the Ant has stepped onto
+   */
+  private AntCell stepOntoNewCell() {
     Coordinate cor = ant.getCoordinates();
     AntCell newCell = (AntCell) playingField.get(cor);
     if (newCell == null) {
@@ -139,11 +159,7 @@ public class AntGrid implements Grid {
       ant.rotate(getRotationDir(newCell.getState().getTimesVisited()));
       newCell.updateState();
     }
-
-    lastAntCor = ant.getCoordinates();
-    lastAntDir = ant.getOrientation();
-    cellHistory.add(0, newCell);
-    stepCount++;
+    return newCell;
   }
 
   /**
@@ -203,6 +219,7 @@ public class AntGrid implements Grid {
   /**
    * Resets the grid to its state of a given number of steps ago.
    * Updates the Cell's States and the Ant's position on the Grid.
+   * Can be called even with no ant on the Grid.
    *
    * @param number int number of steps backwards
    */
@@ -216,27 +233,40 @@ public class AntGrid implements Grid {
       if (cellHistory.size() <= 1) {
         break;
       }
-
-      AntCell lastCell = (AntCell) cellHistory.get(0);
-      int lastCellVisited = lastCell.getState().getTimesVisited();
-      ant.rotate(getInvertedRotationDir(lastCellVisited));
-      lastCell.revertState();
-      lastCellVisited = lastCell.getState().getTimesVisited();
-      if (lastCellVisited == 0) {
-        playingField.remove(lastCell.getCoordinates());
-      }
-
-      if (cellHistory.size() >= 2) {
-        AntCell secondToLastCell = (AntCell) cellHistory.get(1);
-        secondToLastCell.revertState();
-        ant.reposition(secondToLastCell.getCoordinates());
-      }
-
+      resetLastCell();
+      resetSecondToLastCell();
       cellHistory.remove(0);
       stepCount--;
     }
     deleteOutOfBoundsAnt();
     deleteSurplusAnt();
+  }
+
+  /**
+   * Handles the reset of the Cell last visited by the ant.
+   */
+  private void resetLastCell() {
+    AntCell lastCell = (AntCell) cellHistory.get(0);
+    int lastCellVisited = lastCell.getState().getTimesVisited();
+
+    ant.rotate(getInvertedRotationDir(lastCellVisited));
+    lastCell.revertState();
+    lastCellVisited = lastCell.getState().getTimesVisited();
+
+    if (lastCellVisited == 0) {
+      playingField.remove(lastCell.getCoordinates());
+    }
+  }
+
+  /**
+   * Handles the reset of the Cell visited before the last cell.
+   */
+  private void resetSecondToLastCell() {
+    if (cellHistory.size() >= 2) {
+      AntCell secondToLastCell = (AntCell) cellHistory.get(1);
+      secondToLastCell.revertState();
+      ant.reposition(secondToLastCell.getCoordinates());
+    }
   }
 
   /**
@@ -366,6 +396,12 @@ public class AntGrid implements Grid {
     deleteOutOfBoundsAnt();
   }
 
+  /**
+   * Calculates the highest y-coordinate pertaining to the grid after a resize.
+   *
+   * @param ydiff difference in the height to the grid before resize
+   * @return int the new highest y-coordinate of the cell.
+   */
   private int calculateLastY(int ydiff) {
     int y;
     if (ydiff % 2 == 0) {
@@ -381,6 +417,12 @@ public class AntGrid implements Grid {
     return y;
   }
 
+  /**
+   * Calculates the highest x-coordinate pertaining to the grid after a resize.
+   *
+   * @param xdiff difference in the width to the grid before resize
+   * @return int the new highest x-coordinate of the cell.
+   */
   private int calculateLastX(int xdiff) {
     int x;
     if (xdiff % 2 == 0) {
@@ -400,10 +442,10 @@ public class AntGrid implements Grid {
   /**
    * Deletes the Ant if it has "fallen off" the Grid.
    * Method is optimized to be called after a call of deleteOutOfBoundsCells().
-   * Calling this Method without calling deleteOutOfBoundsCells() will result
+   * Calling this Method without calling deleteOutOfBoundsCells() might result
    * in unwanted behaviour.
    * If you want to call this Method without calling deleteOutOfBoundsCells(),
-   * you need to modify it slightly.
+   * you might need to modify it slightly.
    */
   private void deleteOutOfBoundsAnt() {
     if (this.ant == null) {
@@ -429,7 +471,7 @@ public class AntGrid implements Grid {
    */
   private void deleteOutOfBoundsCells() {
 
-    List<Coordinate> outOfBoundsCells = getOutOfBoundsCellsB();
+    List<Coordinate> outOfBoundsCells = getOutOfBoundsCells();
 
     for (Coordinate cor : outOfBoundsCells) {
       playingField.remove(cor);
@@ -442,22 +484,6 @@ public class AntGrid implements Grid {
    * @return List of Coordinates of the out of bounds Cells
    */
   private List<Coordinate> getOutOfBoundsCells() {
-
-    List<Coordinate> outOfBoundsCells = new ArrayList<>();
-    for (Coordinate cor : playingField.keySet()) {
-      boolean xOutOfBounds = cor.getX() >= applyXOffset(getWidth())
-              || cor.getX() < applyXOffset(0);
-      boolean yOutOfBounds = cor.getY() >= applyYOffset(getHeight())
-              || cor.getY() < applyYOffset(0);
-
-      if (xOutOfBounds || yOutOfBounds) {
-        outOfBoundsCells.add(cor);
-      }
-    }
-    return outOfBoundsCells;
-  }
-
-  private List<Coordinate> getOutOfBoundsCellsB() {
 
     List<Coordinate> outOfBoundsCells = new ArrayList<>();
     for (Coordinate cor : playingField.keySet()) {
