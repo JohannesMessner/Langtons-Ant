@@ -67,7 +67,10 @@ public class AntGrid implements Grid {
     row = applyYOffset(row);
     ant.reposition(col, row);
     AntCell cell = (AntCell) playingField.get(ant.getCoordinates());
-    cell = new AntCell(true, ant.getCoordinates());
+    if (cell == null) {
+      cell = new AntCell(ant.getCoordinates());
+    }
+    cell.setAnt(true);
 
     playingField.put(ant.getCoordinates(), cell);
     cellHistory.add(0, cell);
