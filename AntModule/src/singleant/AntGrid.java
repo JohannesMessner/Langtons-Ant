@@ -1,6 +1,12 @@
 package singleant;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class AntGrid implements Grid {
 
@@ -61,11 +67,8 @@ public class AntGrid implements Grid {
     row = applyYOffset(row);
     ant.reposition(col, row);
     AntCell cell = (AntCell) playingField.get(ant.getCoordinates());
-    //if (cell == null) {
     cell = new AntCell(true, ant.getCoordinates());
-    //} else {
-    //cell.setAnt(true);
-    //}
+
     playingField.put(ant.getCoordinates(), cell);
     cellHistory.add(0, cell);
   }
@@ -96,6 +99,18 @@ public class AntGrid implements Grid {
     List<Cell> cellList = new ArrayList<>(playingField.values());
     for (Cell c : cellList) {
       ((AntCell) c).setAnt(false);
+    }
+  }
+
+  /**
+   * Perfoms multiple steps at once.
+   *
+   * @param number int number of steps
+   */
+  @Override
+  public void performStep(int number) {
+    for (int i = 0; i < number; i++) {
+      performStep();
     }
   }
 
@@ -163,7 +178,7 @@ public class AntGrid implements Grid {
    *
    * @param i int indicating how many times a Cell has been visited by the Ant.
    * @return boolean representing the rotation
-   * based on the Convention defined in antconst.Const
+   *  based on the Convention defined in antconst.Const
    */
   private boolean getRotationDir(int i) {
     return configuration[i % configuration.length];
@@ -175,23 +190,12 @@ public class AntGrid implements Grid {
    *
    * @param i int indicating how many times a Cell has been visited by the Ant.
    * @return boolean representing the rotation
-   * based on the Convention defined in antconst.Const
+   *  based on the Convention defined in antconst.Const
    */
   private boolean getInvertedRotationDir(int i) {
     return !getRotationDir(i);
   }
 
-  /**
-   * Perfoms multiple steps at once.
-   *
-   * @param number int number of steps
-   */
-  @Override
-  public void performStep(int number) {
-    for (int i = 0; i < number; i++) {
-      performStep();
-    }
-  }
 
   /**
    * Resets the grid to its state of a given number of steps ago.
@@ -255,7 +259,7 @@ public class AntGrid implements Grid {
    * Returns a column of the Grid by a given index.
    *
    * @param i index of the column
-   * @return List<Cell> of Cells in the column
+   * @return List of Cells in the column
    */
   @Override
   public List<Cell> getColumn(int i) {
@@ -277,7 +281,7 @@ public class AntGrid implements Grid {
    * Returns a row of the Grid by a given index.
    *
    * @param j index of the row
-   * @return List<Cell> of Cells in the row
+   * @return List of Cells in the row
    */
   @Override
   public List<Cell> getRow(int j) {
@@ -327,46 +331,46 @@ public class AntGrid implements Grid {
    */
   @Override
   public void resize(int cols, int rows) {
-    int yDiff = getHeight() - rows;
-    int xDiff = getWidth() - cols;
+    int ydiff = getHeight() - rows;
+    int xdiff = getWidth() - cols;
 
-    this.firstY = firstY + yDiff / 2;
-    this.lastY = calculateLastY(yDiff);
+    this.firstY = firstY + ydiff / 2;
+    this.lastY = calculateLastY(ydiff);
 
-    this.firstX = firstX + (xDiff / 2);
-    this.lastX = calculateLastX(xDiff);
+    this.firstX = firstX + (xdiff / 2);
+    this.lastX = calculateLastX(xdiff);
 
-    this.yOffset += yDiff / 2;
-    this.xOffset += xDiff / 2;
+    this.yOffset += ydiff / 2;
+    this.xOffset += xdiff / 2;
 
     deleteOutOfBoundsCells();
     deleteOutOfBoundsAnt();
   }
 
-  private int calculateLastY(int yDiff) {
+  private int calculateLastY(int ydiff) {
     int y;
-    if (yDiff % 2 == 0) {
-      y = lastY - yDiff / 2;
+    if (ydiff % 2 == 0) {
+      y = lastY - ydiff / 2;
     } else {
-      y = lastY - (yDiff / 2);
-      if (yDiff < 0) {
+      y = lastY - (ydiff / 2);
+      if (ydiff < 0) {
         y++;
-      } else if (yDiff > 0) {
+      } else if (ydiff > 0) {
         y--;
       }
     }
     return y;
   }
 
-  private int calculateLastX(int xDiff) {
+  private int calculateLastX(int xdiff) {
     int x;
-    if (xDiff % 2 == 0) {
-      x = lastX - xDiff / 2;
+    if (xdiff % 2 == 0) {
+      x = lastX - xdiff / 2;
     } else {
-      x = lastX - (xDiff / 2);
-      if (xDiff < 0) {
+      x = lastX - (xdiff / 2);
+      if (xdiff < 0) {
         x++;
-      } else if (xDiff > 0) {
+      } else if (xdiff > 0) {
         x--;
       }
     }
@@ -376,7 +380,6 @@ public class AntGrid implements Grid {
 
   /**
    * Deletes the Ant if it has "fallen off" the Grid.
-   * <p>
    * Method is optimized to be called after a call of deleteOutOfBoundsCells().
    * Calling this Method without calling deleteOutOfBoundsCells() will result
    * in unwanted behaviour.

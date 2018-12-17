@@ -1,5 +1,4 @@
 import antconst.Const;
-import singleant.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +6,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import singleant.Ant;
+import singleant.AntGrid;
+import singleant.Cell;
+import singleant.Direction;
+import singleant.Grid;
+import singleant.State;
+
 
 /**
  * Class handling text-based I/O for a Langton's Ant program.
@@ -26,7 +33,7 @@ public class Shell {
    * Main-method taking user commands and handling them.
    *
    * @param args Command-line arguments
-   * @throws IOException
+   * @throws IOException Exception
    */
   public static void main(String[] args) throws IOException {
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
@@ -58,8 +65,8 @@ public class Shell {
       command = sc.next();
     }
 
-    int commandID = getCommandID(command);
-    switch (commandID) {
+    int commandId = getCommandId(command);
+    switch (commandId) {
       case Const.NEW:
         handleNew();
         break;
@@ -149,11 +156,13 @@ public class Shell {
       i = sc.nextInt();
     } else {
       System.out.println(Const.NO_X_ERROR);
+      return;
     }
     if (sc.hasNextInt()) {
       j = sc.nextInt();
     } else {
       System.out.println(Const.NO_Y_ERROR);
+      return;
     }
 
     ant = new Ant();
@@ -180,12 +189,18 @@ public class Shell {
         grid.performStep(numOfSteps);
       } else if (numOfSteps < 0) {
         grid.reset(-numOfSteps);
+        refreshAnt();
       }
       System.out.println(grid.getStepCount());
       return;
     }
+    if (ant == null) {
+      System.out.println(Const.NO_ANT_ERROR);
+      return;
+    }
     grid.performStep();
     System.out.println(grid.getStepCount());
+    refreshAnt();
   }
 
   private static void handleClear() {
@@ -254,7 +269,7 @@ public class Shell {
     return configArray;
   }
 
-  private static int getCommandID(String command) {
+  private static int getCommandId(String command) {
     if (command.equals("")) {
       return Const.NO_COMMAND;
     }
@@ -345,8 +360,9 @@ public class Shell {
         return Const.COLOR_10;
       case 11:
         return Const.COLOR_11;
+      default:
+        return Const.COLOR_0;
     }
-    return Const.COLOR_0;
   }
 
   private static String getColorSymbol(int positionInCycle) {

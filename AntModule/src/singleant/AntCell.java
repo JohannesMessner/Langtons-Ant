@@ -67,7 +67,7 @@ public class AntCell implements Cell {
   }
 
   /**
-   * returns the Cell's State
+   * returns the Cell's State.
    *
    * @return State of the Cell
    */

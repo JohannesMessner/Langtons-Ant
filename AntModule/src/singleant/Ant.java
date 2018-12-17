@@ -9,8 +9,8 @@ import antconst.Const;
 public class Ant {
 
   private Direction orientation;
-  private int x;
-  private int y;
+  private int xcor;
+  private int ycor;
 
   /**
    * Constructor that assigns a default direction and position.
@@ -32,8 +32,8 @@ public class Ant {
    * @param y int of new y-coordinate
    */
   void reposition(int x, int y) {
-    this.x = x;
-    this.y = y;
+    this.xcor = x;
+    this.ycor = y;
   }
 
   /**
@@ -42,8 +42,8 @@ public class Ant {
    * @param cor new Coordinate
    */
   void reposition(Coordinate cor) {
-    this.x = cor.getX();
-    this.y = cor.getY();
+    this.xcor = cor.getX();
+    this.ycor = cor.getY();
   }
 
   /**
@@ -79,13 +79,13 @@ public class Ant {
 
   void stepForward() {
     if (orientation == Direction.UP) {
-      y--;
+      ycor--;
     } else if (orientation == Direction.RIGHT) {
-      x++;
+      xcor++;
     } else if (orientation == Direction.DOWN) {
-      y++;
+      ycor++;
     } else if (orientation == Direction.LEFT) {
-      x--;
+      xcor--;
     }
   }
 
@@ -95,14 +95,14 @@ public class Ant {
    * @return Coordinate of the ant.
    */
   Coordinate getCoordinates() {
-    return new Coordinate(this.x, this.y);
+    return new Coordinate(this.xcor, this.ycor);
   }
 
   int getX() {
-    return this.x;
+    return this.xcor;
   }
 
   int getY() {
-    return this.y;
+    return this.ycor;
   }
 }

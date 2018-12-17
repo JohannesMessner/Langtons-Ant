@@ -7,15 +7,15 @@ import java.util.Objects;
  */
 public class Coordinate {
 
-  private int x;
-  private int y;
+  private int xcor;
+  private int ycor;
 
   int getX() {
-    return x;
+    return xcor;
   }
 
   int getY() {
-    return y;
+    return ycor;
   }
 
   /**
@@ -25,13 +25,13 @@ public class Coordinate {
    * @param y int y-coordinate
    */
   public Coordinate(int x, int y) {
-    this.x = x;
-    this.y = y;
+    this.xcor = x;
+    this.ycor = y;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(x, y);
+    return Objects.hash(xcor, ycor);
   }
 
   @Override
