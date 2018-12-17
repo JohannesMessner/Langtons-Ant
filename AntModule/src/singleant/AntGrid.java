@@ -233,6 +233,22 @@ public class AntGrid implements Grid {
       stepCount--;
     }
     deleteOutOfBoundsAnt();
+    deleteSurplusAnt();
+  }
+
+  /**
+   * Deletes the Ant if it is on a Position with no Cell.
+   * This scenario can occur without the Ant being out of bounds
+   * after resizes and resets.
+   */
+  private void deleteSurplusAnt() {
+    if (this.ant == null) {
+      return;
+    }
+    Coordinate cor = ant.getCoordinates();
+    if (playingField.get(cor) == null) {
+      this.ant = null;
+    }
   }
 
   /**
