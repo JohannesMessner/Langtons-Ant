@@ -197,7 +197,7 @@ public class AntGrid implements Grid {
    *
    * @param i int indicating how many times a Cell has been visited by the Ant.
    * @return boolean representing the rotation
-   *  based on the Convention defined in antconst.Const
+   *         based on the Convention defined in antconst.Const
    */
   private boolean getRotationDir(int i) {
     return configuration[i % configuration.length];
@@ -209,7 +209,7 @@ public class AntGrid implements Grid {
    *
    * @param i int indicating how many times a Cell has been visited by the Ant.
    * @return boolean representing the rotation
-   *  based on the Convention defined in antconst.Const
+   *         based on the Convention defined in antconst.Const
    */
   private boolean getInvertedRotationDir(int i) {
     return !getRotationDir(i);
