@@ -27,7 +27,7 @@ public class Shell {
   private static boolean quit;
   private static Scanner sc;
   private static int configLen;
-  public static List<String> commands;
+  private static List<String> commands;
 
   private static final String PROMPT = "ant> ";
 
