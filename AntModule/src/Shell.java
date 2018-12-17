@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,6 +27,7 @@ public class Shell {
   private static boolean quit;
   private static Scanner sc;
   private static int configLen;
+  public static List<String> commands;
 
   private static final String PROMPT = "ant> ";
 
@@ -38,6 +40,7 @@ public class Shell {
   public static void main(String[] args) throws IOException {
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     quit = false;
+    loadCommands();
 
     while (!quit) {
       System.out.print(PROMPT);
@@ -49,6 +52,22 @@ public class Shell {
         handleCommand(inputLine);
       }
     }
+  }
+
+  private static void loadCommands() {
+    commands = new ArrayList<String>();
+
+    commands.add(Const.NEW, "new");
+    commands.add(Const.ANT, "ant");
+    commands.add(Const.UNANT, "unant");
+    commands.add(Const.STEP, "step");
+    commands.add(Const.PRINT, "print");
+    commands.add(Const.CLEAR, "clear");
+    commands.add(Const.RESIZE, "resize");
+    commands.add(Const.HELP, "help");
+    commands.add(Const.QUIT, "quit");
+
+    commands = Collections.unmodifiableList(commands);
   }
 
   /**
@@ -298,8 +317,8 @@ public class Shell {
       return Const.INVALID_COMMAND;
     }
     command = command.toLowerCase();
-    for (int i = 0; i < Const.COMMANDS.size(); i++) {
-      if (Const.COMMANDS.get(i).startsWith(command)) {
+    for (int i = 0; i < commands.size(); i++) {
+      if (commands.get(i).startsWith(command)) {
         return i;
       }
     }
